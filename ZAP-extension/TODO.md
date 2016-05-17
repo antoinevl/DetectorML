@@ -1,7 +1,7 @@
 # TODO
 ---
 
--[x] Getting started
+- [x] Getting started
 ..- Install ZAP
 ..- Generate/Import certificate
 ..- [ZAP browser setup](https://security.secure.force.com/security/tools/webapp/zapbrowsersetup)
@@ -9,4 +9,4 @@
 ..- Use of breakpoints: intercept requests
 ..- [API](https://github.com/zaproxy/zaproxy/wiki/ApiDetails)
 
--[] Get static features
+- [] Get static features
