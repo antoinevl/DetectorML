@@ -25,6 +25,5 @@ for ind in xrange(number_pages):
 		end = page.find('"',start)
 		link = "http://"+page[start:end]
 		f.write(link)
-		f.write("\n")
 
 f.close()
