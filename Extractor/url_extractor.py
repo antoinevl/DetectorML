@@ -2,8 +2,6 @@
 import urllib2
 import static_extractor as se
 import dynamic_extractor as de
-from pymongo import MongoClient
-from pprint import pprint
 
 class URL:
     #url_name = 'http://www.google.com/'
@@ -12,9 +10,9 @@ class URL:
 
     def __init__(self, url):
         self.url_name = url
-        self.resp = urllib2.urlopen(self.url_name)
-        self.page = self.resp.read()
-
+        self.page = process_request(url)['page']
+        self.code = process_request(url)['code']
+                               
     script_token_start = "<script>"
     script_token_end = "</script>"
 
@@ -40,9 +38,30 @@ class URL:
         dynamic_features['feat1'] = de.feature1(self.page)
         return dynamic_features
 
-def insert_url(url_name, description, url_type, static_features_dic, dynamic_features_dic, collection):
+def process_request(url):
+    output = {}
+    req = urllib2.Request(url)
+    try:
+        resp = urllib2.urlopen(req)
+    except urllib2.HTTPError as e:
+        output['code'] = e.code
+        output['page'] = ''
+    except urllib2.URLError as e:
+        output['code'] = -1
+        output['page'] = ''
+    except:
+        output['code'] = -1
+        output['page'] = ''
+    else:
+        page = resp.read()
+        output['page'] = page
+        output['code'] = 200
+    return output  
+
+
+def insert_url(url_name, code, description, url_type, static_features_dic, dynamic_features_dic, collection):
 	dic_collection = collection.find_one({"url":url_name})
-	if (dic_collection != None):
+	if (dic_collection != None) and (code==200):
 		print("URL: "+url_name+" already stored in the collection.")
 
 		# Add features if they are not present in the database
@@ -79,6 +98,8 @@ def insert_url(url_name, description, url_type, static_features_dic, dynamic_fea
 			print s
 		if len(added_dynamic_features) == 0 and len(added_static_features) == 0:
 			print "No new added features."
+	elif (dic_collection != None) and (code!=200):
+         print("URL: "+url_name+" not available. Won't be stored into the database.")
 	else:
 		s = {
 			"url": url_name,
@@ -95,7 +116,7 @@ def insert_url(url_name, description, url_type, static_features_dic, dynamic_fea
 		     }
 
 		result = collection.insert_one(s)
-		print("URL added to the collection.")
+		print("URL: "+url_name+" added to the collection.")
 		return result
 
 # update/add a feature of a certain URL in the database
@@ -132,24 +153,4 @@ def del_feature(url, feature_name, feature_type, collection):
 	# delete in mongodb
 	result = collection.update({}, {'$unset': {s:1}}, multi=True)
 	return result
-
-# Process
-if __name__ == "__main__":
-    analysed_url = URL('http://google.co.uk/')
-    vm_url = '146.169.47.251'
-    db_port = 27017
-    client = MongoClient(vm_url, db_port)
-    db = client.projectDB
-    db_urls = db.urls
-    
-    insert_url(analysed_url.url_name, 'Test', 'Benign', analysed_url.static_features(), analysed_url.dynamic_features(), db_urls)
-    #update_feature(url_name, 'line_count', 'static', 999999, urls)
-    #del_feature(analysed_url.url_name, 'feat2', 'dynamic', urls)
-
-    print "\n--------------------------------------------------------"
-    print "Database"
-    for document in db_urls.find():
-        print "--------------------------------------------------------\n"
-        pprint(document)
-        print ""
 
