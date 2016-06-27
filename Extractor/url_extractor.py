@@ -1,57 +1,44 @@
 #!/usr/bin/env python
-
 import urllib2
-
-url_name = 'http://www.google.com/'
-
-resp = urllib2.urlopen(url_name)
-page = resp.read()
-
-
-#--- Extract Javascript between tokens <script></script>
-script_token_start = "<script>"
-script_token_end = "</script>"
-
-javascript = []
-ind_start = 0
-while (page.find(script_token_start, ind_start)!=-1):
-	ind_start = page.find(script_token_start, ind_start) + len(script_token_start)
-	ind_end = page.find(script_token_end, ind_start)
-	javascript.append(page[ind_start:ind_end])
-	ind_start = ind_end
-
-#--- Extract static features
-static_features = {}
-
-#-- line count
-lines = page.splitlines()
-static_features['line_count'] = len(lines)
-
-#-- letter count
-letter_count = 0
-for line in lines:
-	letter_count += len(line)
-static_features['letter_count'] = letter_count
-
-#-- word count
-word_count = 0
-for line in lines:
-	word_count += len(line.split())
-static_features['word_count'] = word_count
-
-#--- Extract dynamic features
-dynamic_features = {}
-dynamic_features['feat1'] = 0
-dynamic_features['feat2'] = 0
-dynamic_features['feat3'] = 2
-dynamic_features['feat4'] = 2
-dynamic_features['feat5'] = 2
-dynamic_features['feat7'] = 2
-dynamic_features['feat8'] = 2
-
-
-#--- Save in database
+import static_extractor as se
+import dynamic_extractor as de
 from pymongo import MongoClient
+from pprint import pprint
+
+class URL:
+    #url_name = 'http://www.google.com/'
+    #resp = urllib2.urlopen(url_name)
+    #page = resp.read()
+
+    def __init__(self, url):
+        self.url_name = url
+        self.resp = urllib2.urlopen(self.url_name)
+        self.page = self.resp.read()
+
+    script_token_start = "<script>"
+    script_token_end = "</script>"
+
+    def js(self):
+        javascript = []
+        ind_start = 0
+        while (self.page.find(self.script_token_start, ind_start)!=-1):
+        	ind_start = self.page.find(self.script_token_start, ind_start) + len(self.script_token_start)
+        	ind_end = self.page.find(self.script_token_end, ind_start)
+        	javascript.append(self.page[ind_start:ind_end])
+        	ind_start = ind_end
+        return javascript
+    
+    def static_features(self):
+        static_features = {}
+        static_features['letter_count'] = se.letter_count(self.page)
+        static_features['word_count'] = se.word_count(self.page)
+        static_features['line_count'] = se.line_count(self.page)
+        return static_features
+        
+    def dynamic_features(self):
+        dynamic_features = {}
+        dynamic_features['feat1'] = de.feature1(self.page)
+        return dynamic_features
 
 def insert_url(url_name, description, url_type, static_features_dic, dynamic_features_dic, collection):
 	dic_collection = collection.find_one({"url":url_name})
@@ -98,13 +85,12 @@ def insert_url(url_name, description, url_type, static_features_dic, dynamic_fea
 			"description": description,
 			"type": url_type,
 			"static_features": [{
-				"line_count": static_features['line_count'],
-				"word_count": static_features['word_count'],
-				"letter_count": static_features['letter_count']
+				"line_count": static_features_dic['line_count'],
+				"word_count": static_features_dic['word_count'],
+				"letter_count": static_features_dic['letter_count']
 			}],
 			"dynamic_features": [{
-				"feat1": 0,
-				"feat2": 0
+				"feat1": 0
 			}]
 		     }
 
@@ -148,16 +134,22 @@ def del_feature(url, feature_name, feature_type, collection):
 	return result
 
 # Process
-vm_url = '146.169.47.251'
-db_port = 27017
-client = MongoClient(vm_url, db_port)
-db = client.projectDB
-urls = db.urls
+if __name__ == "__main__":
+    analysed_url = URL('http://google.co.uk/')
+    vm_url = '146.169.47.251'
+    db_port = 27017
+    client = MongoClient(vm_url, db_port)
+    db = client.projectDB
+    db_urls = db.urls
+    
+    insert_url(analysed_url.url_name, 'Test', 'Benign', analysed_url.static_features(), analysed_url.dynamic_features(), db_urls)
+    #update_feature(url_name, 'line_count', 'static', 999999, urls)
+    #del_feature(analysed_url.url_name, 'feat2', 'dynamic', urls)
 
-insert_url(url_name, 'Test', 'Benign', static_features, dynamic_features, urls)
-#update_feature(url_name, 'line_count', 'static', 999999, urls)
-#del_feature(url_name, 'new_feature', 'static', urls)
-
-for document in urls.find():
-	print document
+    print "\n--------------------------------------------------------"
+    print "Database"
+    for document in db_urls.find():
+        print "--------------------------------------------------------\n"
+        pprint(document)
+        print ""
 
