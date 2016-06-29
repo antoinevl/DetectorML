@@ -2,6 +2,7 @@
 import urllib2
 import static_extractor as se
 import dynamic_extractor as de
+import sys
 
 class URL:
     #url_name = 'http://www.google.com/'
@@ -63,7 +64,8 @@ def process_request(url, user_agent = None):
         output['code'] = -1
         output['page'] = ''
     except:
-        output['code'] = -1
+        #print sys.exc_info()
+        output['code'] = -2
         output['page'] = ''
     else:
         page = resp.read()
@@ -114,7 +116,9 @@ def insert_url(url_name, code, description, url_type, static_features_dic, dynam
 		if len(added_dynamic_features) == 0 and len(added_static_features) == 0:
 			print "No new added features."
 	elif (dic_collection != None) and (code!=200):
-         print("URL: "+url_name+" not available. Won't be stored into the database.")
+         print("URL: "+url_name+" stored but not available. Won't be stored into the database.")
+	elif (dic_collection == None) and (code != 200):
+         print("URL: "+url_name+" not available (code "+str(code)+"). Won't be stored into the database.")
 	else:
 		s = {
 			"url": url_name,
