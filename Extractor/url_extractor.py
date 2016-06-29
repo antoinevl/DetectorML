@@ -38,7 +38,9 @@ class URL:
         dynamic_features['feat1'] = de.feature1(self.page)
         return dynamic_features
 
-def process_request(url):
+def process_request(url, user_agent = None):
+    if user_agent == None:
+        
     output = {}
     req = urllib2.Request(url)
     try:
