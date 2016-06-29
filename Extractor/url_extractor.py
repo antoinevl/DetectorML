@@ -57,7 +57,7 @@ def process_request(url):
         output['page'] = page
         output['code'] = 200
     return output  
-
+    
 
 def insert_url(url_name, code, description, url_type, static_features_dic, dynamic_features_dic, collection):
 	dic_collection = collection.find_one({"url":url_name})
@@ -81,7 +81,7 @@ def insert_url(url_name, code, description, url_type, static_features_dic, dynam
 				if not (feat in list_dynamic[i]):
 					update_feature(url_name, feat, 'dynamic', dynamic_features_dic[feat], collection)
 					added_dynamic_features.append(feat)
-			
+			type
 		if len(added_static_features)>0:
 			s = "Added static features: "
 			for f in added_static_features:
@@ -138,9 +138,9 @@ def update_feature(url, feature_name, feature_type, new_value, collection):
 	return result
 
 
-# delete a feature of a certain URL in the database
+# delete a feature in the database
 # feature_type is either 'static' or 'dynamic'
-def del_feature(url, feature_name, feature_type, collection):
+def del_feature(feature_name, feature_type, collection):
 	# what type of feature to delete
 	if (feature_type == 'static'):
 		s = 'static_features.0.'
@@ -154,3 +154,58 @@ def del_feature(url, feature_name, feature_type, collection):
 	result = collection.update({}, {'$unset': {s:1}}, multi=True)
 	return result
 
+def add_field(url, field_name, field_value, collection):
+	result = collection.update_one(
+		{"url": url},
+    		{"$set": {field_name: field_value}})
+	return result
+ 
+def add_field_all(field_name, field_value, collection):
+    urls = get_all_urls_db(collection)
+    for url in urls:
+        add_field(url, field_name, field_value, collection)
+    return 1
+    
+def del_field_all(url, field_name, collection):
+    result = collection.update({}, {'$unset': {field_name:1}}, multi=True)
+    return result
+    
+def get_all_urls_db(collection):
+    urls = []
+    items = collection.find()
+    for item in items:
+        urls.append(item['url'])
+    return urls
+
+def get_benign_urls_db(collection):
+    urls = []
+    items = collection.find()
+    for item in items:
+        if item['type']=='Benign':
+            urls.append(item['url'])
+    return urls
+    
+def get_malicious_urls_db(collection):
+    urls = []
+    items = collection.find()
+    for item in items:
+        if item['type']=='Malicious':
+            urls.append(item['url'])
+    return urls
+
+def del_url(url_name, collection):
+    collection.delete_many({'url':url_name})
+    
+# Deletes all urls with letter_count == 0
+def sanitize_db(collection):
+    items = collection.find()
+    for item in items:
+        if (item['static_features'][0]['letter_count']==0):
+            del_url(item['url'], collection)
+
+def count(url_type, collection):
+    if url_type == 'Benign':
+        return len(get_benign_urls_db(collection))
+    if url_type == 'Malicious':
+        return len(get_malicious_urls_db(collection))
+            
