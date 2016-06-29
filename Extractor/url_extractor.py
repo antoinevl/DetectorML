@@ -8,10 +8,14 @@ class URL:
     #resp = urllib2.urlopen(url_name)
     #page = resp.read()
 
-    def __init__(self, url):
+    def __init__(self, url, user_agent = None):
         self.url_name = url
-        self.page = process_request(url)['page']
-        self.code = process_request(url)['code']
+        if user_agent == 'firefox':
+            self.page = process_request(url, 'firefox')['page']
+            self.code = process_request(url, 'firefox')['code']
+        else:
+            self.page = process_request(url)['page']
+            self.code = process_request(url)['code']
                                
     script_token_start = "<script>"
     script_token_end = "</script>"
@@ -39,10 +43,17 @@ class URL:
         return dynamic_features
 
 def process_request(url, user_agent = None):
-    if user_agent == None:
-        
     output = {}
-    req = urllib2.Request(url)
+    
+    # User Agent 
+    if user_agent == None:
+        req = urllib2.Request(url)
+    elif user_agent == 'firefox':
+        req = urllib2.Request(url, headers={ 'User-Agent': 'Mozilla/5.0' })
+    else:
+        raise "Error in process_request. "+user_agent+" is unknown."
+    
+    # Open and read    
     try:
         resp = urllib2.urlopen(req)
     except urllib2.HTTPError as e:
@@ -58,6 +69,7 @@ def process_request(url, user_agent = None):
         page = resp.read()
         output['page'] = page
         output['code'] = 200
+        
     return output  
     
 
@@ -73,17 +85,18 @@ def insert_url(url_name, code, description, url_type, static_features_dic, dynam
 		for feat in static_features_dic:
 			list_static = dic_collection["static_features"]
 			for i in xrange(len(list_static)):
+				update_feature(url_name, feat, 'static', static_features_dic[feat], collection)
 				if not (feat in list_static[i]):
-					update_feature(url_name, feat, 'static', static_features_dic[feat], collection)
 					added_static_features.append(feat)
+					
 
 		for feat in dynamic_features_dic:
 			list_dynamic = dic_collection["dynamic_features"]
 			for i in xrange(len(list_dynamic)):
+				update_feature(url_name, feat, 'dynamic', dynamic_features_dic[feat], collection)
 				if not (feat in list_dynamic[i]):
-					update_feature(url_name, feat, 'dynamic', dynamic_features_dic[feat], collection)
 					added_dynamic_features.append(feat)
-			type
+
 		if len(added_static_features)>0:
 			s = "Added static features: "
 			for f in added_static_features:
