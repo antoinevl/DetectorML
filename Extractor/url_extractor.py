@@ -3,6 +3,7 @@ import urllib2
 import static_extractor as se
 import dynamic_extractor as de
 import sys
+import numpy
 
 class URL:
     #url_name = 'http://www.google.com/'
@@ -141,22 +142,31 @@ def insert_url(url_name, code, description, url_type, static_features_dic, dynam
 # update/add a feature of a certain URL in the database
 # feature_type is either 'static' or 'dynamic'
 def update_feature(url, feature_name, feature_type, new_value, collection):
-	# what type of feature to update
-	if (feature_type == 'static'):
-		s = 'static_features.0.'
-	elif (feature_type == 'dynamic'):
-		s = 'dynamic_features.0.'
-	else:
-		print "Error in 'update_feature': did not indicate if static or dynamic feature."
-	s += feature_name
+    # what type of feature to update
+    if (feature_type == 'static'):
+        s = 'static_features.0.'
+    elif (feature_type == 'dynamic'):
+        s = 'dynamic_features.0.'
+    else:
+        print "Error in 'update_feature': did not indicate if static or dynamic feature."
+    s += feature_name
 	
-	# update in mongodb
-	result = collection.update_one(
-		{"url": url},
-    		{"$set": {s: new_value}})
-	return result
+    # update in mongodb
+    result = collection.update_one(
+        {"url": url},
+        {"$set": {s: new_value}})
+    return result
 
-
+def update_feature_all(feature_name, feature_type, new_value, collection):
+    for item in collection.find():
+        url_name = item['url']
+        if feature_type == 'static':
+            update_feature(url_name, feature_name, 'static', new_value, collection)
+        elif feature_type == 'dynamic':
+            update_feature(url_name, feature_name, 'dynamic', new_value, collection)
+        else:
+            print "Error in update_feature_all"
+        
 # delete a feature in the database
 # feature_type is either 'static' or 'dynamic'
 def del_feature(feature_name, feature_type, collection):
@@ -185,7 +195,7 @@ def add_field_all(field_name, field_value, collection):
         add_field(url, field_name, field_value, collection)
     return 1
     
-def del_field_all(url, field_name, collection):
+def del_field_all(field_name, collection):
     result = collection.update({}, {'$unset': {field_name:1}}, multi=True)
     return result
     
@@ -227,4 +237,57 @@ def count(url_type, collection):
         return len(get_benign_urls_db(collection))
     if url_type == 'Malicious':
         return len(get_malicious_urls_db(collection))
-            
+
+# feature_type = 'All' or 'Static' or 'Dynamic'
+def nb_features(collection):
+    n = {'Static':0,'Dynamic':0, 'All':0}
+    items = collection.find()
+    for item in items:
+        n['Static'] = len(item['static_features'][0])
+        n['Dynamic'] = len(item['dynamic_features'][0])
+        n['All'] = n['Static'] + n['Dynamic']
+        break
+    return n
+    
+def features_names(collection):
+    names = {'Static':[],'Dynamic':[], 'All':[]}
+    items = collection.find()
+    for item in items:
+        for i in item['static_features'][0]:
+            names['Static'].append(i)
+        for i in item['dynamic_features'][0]:
+            names['Dynamic'].append(i)
+        names['All'] = numpy.concatenate((names['Static'], names['Dynamic']))
+        break
+    return names
+
+def features_values(url_name, collection):
+    values = {'Static':[],'Dynamic':[], 'All':[]}
+    items = collection.find()
+    for item in items:
+        if item['url'] == url_name :
+            for i in item['static_features'][0]:
+                love = item['static_features'][0][i]
+                values['Static'].append(love)
+            for i in item['dynamic_features'][0]:
+                love = item['dynamic_features'][0][i]
+                values['Dynamic'].append(love)
+            values['All'] = numpy.concatenate((values['Static'], values['Dynamic']))            
+
+    return values
+
+def db_to_dataset(collection):
+    dataset = {}
+    dataset['features'] = features_names(collection)
+    dataset['data'] = []
+    dataset['target'] = []
+
+    items = collection.find()
+    for item in items:
+        url_name = item['url']
+        sample = features_values(url_name, collection)['All']
+        dataset['data'].append(sample)
+        dataset['target'].append(item['type'])
+    
+    return dataset
+        
