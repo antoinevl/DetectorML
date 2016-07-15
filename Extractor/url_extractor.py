@@ -4,6 +4,7 @@ import static_extractor as se
 import dynamic_extractor as de
 import sys
 import numpy
+from datetime import date
 
 class URL:
     #url_name = 'http://www.google.com/'
@@ -18,11 +19,17 @@ class URL:
         else:
             self.page = process_request(url)['page']
             self.code = process_request(url)['code']
-                               
+    
+    def set_page(self, p):
+        self.page = p
+    
+    def set_code(self, c):
+        self.code = c
+                           
     script_token_start = "<script>"
     script_token_end = "</script>"
 
-    def js(self):
+    def js_list(self):
         javascript = []
         ind_start = 0
         while (self.page.find(self.script_token_start, ind_start)!=-1):
@@ -32,11 +39,19 @@ class URL:
         	ind_start = ind_end
         return javascript
     
+    def js_all(self):
+        return '\n'.join(self.js_list())
+    
     def static_features(self):
         static_features = {}
         static_features['letter_count'] = se.letter_count(self.page)
         static_features['word_count'] = se.word_count(self.page)
         static_features['line_count'] = se.line_count(self.page)
+        static_features['js_letter_count'] = se.letter_count(self.js_all())
+        static_features['js_word_count'] = se.word_count(self.js_all())
+        static_features['js_line_count'] = se.line_count(self.js_all())
+        static_features['js_keyword_count'] = se.keyword_count(self.js_all(), 'eval')
+        static_features['js_most_frequent_word'] = se.most_frequent_word(self.js_all())
         return static_features
         
     def dynamic_features(self):
@@ -139,6 +154,13 @@ def insert_url(url_name, code, description, url_type, static_features_dic, dynam
 		print("URL: "+url_name+" added to the collection.")
 		return result
 
+
+
+def update_date(url, collection):
+    collection.update_one(
+        {"url": url},
+        {"$set": {"date": date.today().strftime('%d%m%y')}})
+
 # update/add a feature of a certain URL in the database
 # feature_type is either 'static' or 'dynamic'
 def update_feature(url, feature_name, feature_type, new_value, collection):
@@ -152,9 +174,11 @@ def update_feature(url, feature_name, feature_type, new_value, collection):
     s += feature_name
 	
     # update in mongodb
+    update_date(url,collection)
     result = collection.update_one(
         {"url": url},
         {"$set": {s: new_value}})
+    print "Feature: "+feature_name+" updated."
     return result
 
 def update_feature_all(feature_name, feature_type, new_value, collection):
@@ -162,8 +186,10 @@ def update_feature_all(feature_name, feature_type, new_value, collection):
         url_name = item['url']
         if feature_type == 'static':
             update_feature(url_name, feature_name, 'static', new_value, collection)
+            update_date(url_name,collection)
         elif feature_type == 'dynamic':
             update_feature(url_name, feature_name, 'dynamic', new_value, collection)
+            update_date(url_name,collection)
         else:
             print "Error in update_feature_all"
         
@@ -275,6 +301,14 @@ def features_values(url_name, collection):
             values['All'] = numpy.concatenate((values['Static'], values['Dynamic']))            
 
     return values
+
+def get_field_from_url(url_name, field_name, collection):
+    items = collection.find()
+    value = -1    
+    for item in items:
+        if item['url'] == url_name :
+            value = item[field_name]
+    return value
 
 def db_to_dataset(collection):
     dataset = {}

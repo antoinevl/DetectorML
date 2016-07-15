@@ -5,6 +5,7 @@ Created on Mon Jun 27 18:30:31 2016
 @author: avl
 """
 
+import base64
 import Extractor.url_extractor as ue
 from pymongo import MongoClient
 from pprint import pprint
@@ -61,16 +62,25 @@ def main_malicious():
             src = line.split()[2]
             d = line.split()[3]
             cpt_malicious += 1
-#            s1 = ''
-#            if cpt_malicious%50 == 0:
-#                s1 = "\n Time elapsed: "+str(time.time() - t)+"\n"            
-#            s =s1+str(cpt_malicious)+ " - "
-#            print s,
+            
             analysed_url = ue.URL(u, 'firefox')
+            # If malicious page already in the database:           
+            try:
+                p_b64 = ue.get_field_from_url(u, 'page_b64', db_urls)
+                analysed_url.set_page(base64.b64decode(p_b64))
+                c = ue.get_field_from_url(u, 'code', db_urls)
+                analysed_url.set_code(base64.b64decode(c))
+            except:
+                p_b64 = base64.b64encode(analysed_url.page)
+                c = analysed_url.code
+                        
             result = ue.insert_url(analysed_url.url_name, analysed_url.code,'', 'Malicious', analysed_url.static_features(), analysed_url.dynamic_features(), db_urls)
+            ue.add_field(u, 'code', c, db_urls)            
+            ue.add_field(u, 'page-b64', p_b64, db_urls)            
             ue.add_field(u, 'malicious-type', t, db_urls)
             ue.add_field(u, 'malicious-source', src, db_urls)
             ue.add_field(u, 'date', d, db_urls)
+            
     return result
 
 def print_db():
@@ -88,6 +98,11 @@ def print_count(b, m):
     print "> Malicious items: "+str(m)
     print "--------------------------------------------------------\n"
 
+
+#for document in db_urls.find():
+#    print ue.get_field_from_url(document['url'], 'type', db_urls)
+
+
 ## Here we go!
 
 ## Crawl
@@ -103,18 +118,21 @@ c_benign = ue.count('Benign', db_urls)
 c_malicious = ue.count('Malicious', db_urls)
 print_count(c_benign, c_malicious)
 
+print_db()
+
 ### Machine Learning
 ## Create dataset
         #ue.update_feature_all('feat1','static',1,db_urls)
         #ue.update_feature_all('feat1','dynamic',1,db_urls)
-dataset = ue.db_to_dataset(db_urls)
+
+#dataset = ue.db_to_dataset(db_urls)
 
 ## Shuffle the dataset
-dataset = cls.shuffle_dataset(dataset)
+#dataset = cls.shuffle_dataset(dataset)
 
 ## 10-cross-fold validation
-X_train, X_test, y_train, y_test = cross_validation.train_test_split(dataset['data'], dataset['target'], test_size=0.4, random_state=0)
-clf = svm.SVC(kernel='linear', C=1).fit(X_train, y_train)
-score = clf.score(X_test, y_test)
+#X_train, X_test, y_train, y_test = cross_validation.train_test_split(dataset['data'], dataset['target'], test_size=0.4, random_state=0)
+#clf = svm.SVC(kernel='linear', C=1).fit(X_train, y_train)
+#score = clf.score(X_test, y_test)
 
-print "Score: "+str(score)
+#print "Score: "+str(score)

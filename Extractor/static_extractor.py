@@ -22,3 +22,25 @@ def word_count(page):
     for line in lines:
     	word_count += len(line.split())
     return word_count
+
+def keyword_count(page, keyword):
+    return page.count(keyword)
+
+def percentage_whitespace(page):
+    return page.count(' ')
+    
+def most_frequent_word(page):
+    dico = {}
+    words = page.split()
+    for word in words:
+        if not(word in dico):
+            c = page.count(word)
+            dico[word] = c
+    try:
+        result = max(dico, key=dico.get)
+    except:
+        result = 'None'
+    else:
+        return result
+
+
