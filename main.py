@@ -56,11 +56,19 @@ def main_malicious():
     with open(malicious_urls_addr, 'r') as f:
         cpt_malicious = 0
         lines = f.read().splitlines()
+        
+        # u = URL ;
+        # ip = IP
+        # t = malicious type ; 
+        # src = malicious source ; 
+        # d = date ; 
+        # p_b64 = page encode in base64
         for line in lines:
             u = line.split()[0]
-            t = line.split()[1]
-            src = line.split()[2]
-            d = line.split()[3]
+            ip = line.split()[1]
+            t = line.split()[2]
+            src = line.split()[3]
+            d = line.split()[4]
             cpt_malicious += 1
             
             analysed_url = ue.URL(u, 'firefox')
@@ -75,7 +83,8 @@ def main_malicious():
                 c = analysed_url.code
                         
             result = ue.insert_url(analysed_url.url_name, analysed_url.code,'', 'Malicious', analysed_url.static_features(), analysed_url.dynamic_features(), db_urls)
-            ue.add_field(u, 'code', c, db_urls)            
+            ue.add_field(u, 'code', c, db_urls) 
+            ue.add_field(u, 'ip', ip, db_urls)
             ue.add_field(u, 'page-b64', p_b64, db_urls)            
             ue.add_field(u, 'malicious-type', t, db_urls)
             ue.add_field(u, 'malicious-source', src, db_urls)
@@ -106,7 +115,7 @@ def print_count(b, m):
 ## Here we go!
 
 ## Crawl
-#mwc.crawl()
+mwc.crawl_mwd()
 #axc.crawl()
 
 ## Extract
@@ -118,7 +127,7 @@ c_benign = ue.count('Benign', db_urls)
 c_malicious = ue.count('Malicious', db_urls)
 print_count(c_benign, c_malicious)
 
-print_db()
+#print_db()
 
 ### Machine Learning
 ## Create dataset
