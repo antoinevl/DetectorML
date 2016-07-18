@@ -115,6 +115,8 @@ def crawl_mwdl():
     print 'Crawling done.'
 
 def crawl():
+    print "--------------------------------------------------------\nCrawl:"
+    
     crawl_mwd()
     crawl_mwdl()
     with open('/home/avl/MSc-project/Crawler/malwaredomains-raw-recent','r') as f:
@@ -123,6 +125,8 @@ def crawl():
         l2 = f.read()
     with open('/home/avl/MSc-project/Crawler/mwlist_all','w') as f:
         f.write(l1+l2)
+        
+    print "--------------------------------------------------------\n"
     
 if __name__ == '__main__':
     crawl()
