@@ -107,6 +107,15 @@ def print_count(b, m):
     print "> Malicious items: "+str(m)
     print "--------------------------------------------------------\n"
 
+def print_features():
+    print "--------------------------------------------------------"
+    print "Features:\n"
+    print ">",
+    feats = ue.features_names(db_urls)['Dynamic']
+    for f in feats:
+        print " "+f,
+    print "\n--------------------------------------------------------\n"
+
 
 #for document in db_urls.find():
 #    print ue.get_field_from_url(document['url'], 'type', db_urls)
@@ -115,33 +124,35 @@ def print_count(b, m):
 ## Here we go!
 
 ## Crawl
-#mwc.crawl()
+mwc.crawl()
 #axc.crawl()
 
 ## Extract
-#main_benign()
-#main_malicious()
-#ue.sanitize_db(db_urls)
+main_benign()
+main_malicious()
+ue.sanitize_db(db_urls)
 #print_db()
 c_benign = ue.count('Benign', db_urls)
 c_malicious = ue.count('Malicious', db_urls)
 print_count(c_benign, c_malicious)
 
 #print_db()
+print_features()
+
 
 ### Machine Learning
 ## Create dataset
         #ue.update_feature_all('feat1','static',1,db_urls)
         #ue.update_feature_all('feat1','dynamic',1,db_urls)
 
-dataset = ue.db_to_dataset(db_urls)
+#dataset = ue.db_to_dataset(db_urls)
 
 ## Shuffle the dataset
-dataset = cls.shuffle_dataset(dataset)
+#dataset = cls.shuffle_dataset(dataset)
 
 ## 10-cross-fold validation
-X_train, X_test, y_train, y_test = cross_validation.train_test_split(dataset['data'], dataset['target'], test_size=0.4, random_state=0)
-clf = svm.SVC(kernel='linear', C=1).fit(X_train, y_train)
-score = clf.score(X_test, y_test)
+#X_train, X_test, y_train, y_test = cross_validation.train_test_split(dataset['data'], dataset['target'], test_size=0.4, random_state=0)
+#clf = svm.SVC(kernel='linear', C=1).fit(X_train, y_train)
+#score = clf.score(X_test, y_test)
 
-print "Learning score: "+str(score)
+#print "Learning score: "+str(score)

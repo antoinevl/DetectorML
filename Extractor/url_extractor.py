@@ -14,11 +14,11 @@ class URL:
     def __init__(self, url, user_agent = None):
         self.url_name = url
         if user_agent == 'firefox':
-            self.page = process_request(url, 'firefox')['page']
-            self.code = process_request(url, 'firefox')['code']
+            self.page = self.process_request(url, 'firefox')['page']
+            self.code = self.process_request(url, 'firefox')['code']
         else:
-            self.page = process_request(url)['page']
-            self.code = process_request(url)['code']
+            self.page = self.process_request(url)['page']
+            self.code = self.process_request(url)['code']
     
     def set_page(self, p):
         self.page = p
@@ -59,38 +59,54 @@ class URL:
         dynamic_features['feat1'] = de.feature1(self.page)
         return dynamic_features
 
-def process_request(url, user_agent = None):
-    output = {}
-    
-    # User Agent 
-    if user_agent == None:
-        req = urllib2.Request(url)
-    elif user_agent == 'firefox':
-        req = urllib2.Request(url, headers={ 'User-Agent': 'Mozilla/5.0' })
-    else:
-        raise "Error in process_request. "+user_agent+" is unknown."
-    
-    # Open and read    
-    try:
-        resp = urllib2.urlopen(req)
-    except urllib2.HTTPError as e:
-        output['code'] = e.code
-        output['page'] = ''
-    except urllib2.URLError as e:
-        output['code'] = -1
-        output['page'] = ''
-    except:
-        #print sys.exc_info()
-        output['code'] = -2
-        output['page'] = ''
-    else:
-        page = resp.read()
-        output['page'] = page
-        output['code'] = 200
+    # Returns html and error code of the request
+    def process_request(self, url, user_agent = None, method = None):
+        output = {}
         
-    return output  
-    
+        # Parameters
+        if method == 'Selenium':
+            if user_agent == 'firefox':
+                print
+            elif user_agent == None:
+                print
+            else:
+                raise "Error in process_request. User agent: "+user_agent+" unknown."
+        
+        elif method == 'urllib2':
+            if user_agent == 'firefox':
+                req = urllib2.Request(url, headers={ 'User-Agent': 'Mozilla/5.0' })
+            elif user_agent == None: 
+                req = urllib2.Request(url)
+            else:
+                raise "Error in process_request. User agent: "+user_agent+" unknown."
+            
+            # Open and read    
+            try:
+                resp = urllib2.urlopen(req)
+            except urllib2.HTTPError as e:
+                output['code'] = e.code
+                output['page'] = ''
+            except urllib2.URLError as e:
+                output['code'] = -1
+                output['page'] = ''
+            except:
+                #print sys.exc_info()
+                output['code'] = -2
+                output['page'] = ''
+            else:
+                page = resp.read()
+                output['page'] = page
+                output['code'] = 200
+                  
+            
+        else:
+            raise "Error in process_request. Method: "+method+" unknown."
+        
+        self.page = output['page']        
+        
+        return output    
 
+# Insert/Update URL in the database
 def insert_url(url_name, code, description, url_type, static_features_dic, dynamic_features_dic, collection):
 	dic_collection = collection.find_one({"url":url_name})
 	if (dic_collection != None) and (code==200):
@@ -154,8 +170,7 @@ def insert_url(url_name, code, description, url_type, static_features_dic, dynam
 		print("URL: "+url_name+" added to the collection.")
 		return result
 
-
-
+# update date
 def update_date(url, collection):
     collection.update_one(
         {"url": url},
@@ -181,6 +196,7 @@ def update_feature(url, feature_name, feature_type, new_value, collection):
     print "Feature: "+feature_name+" updated."
     return result
 
+# update/add a feature for all the database
 def update_feature_all(feature_name, feature_type, new_value, collection):
     for item in collection.find():
         url_name = item['url']
@@ -258,6 +274,7 @@ def sanitize_db(collection):
         if (item['static_features'][0]['letter_count']==0):
             del_url(item['url'], collection)
 
+# Counts benign and malicious URLs in the database
 def count(url_type, collection):
     if url_type == 'Benign':
         return len(get_benign_urls_db(collection))
@@ -298,8 +315,7 @@ def features_values(url_name, collection):
             for i in item['dynamic_features'][0]:
                 love = item['dynamic_features'][0][i]
                 values['Dynamic'].append(love)
-            values['All'] = numpy.concatenate((values['Static'], values['Dynamic']))            
-
+            values['All'] = numpy.concatenate((values['Static'], values['Dynamic']))
     return values
 
 def get_field_from_url(url_name, field_name, collection):
@@ -324,4 +340,4 @@ def db_to_dataset(collection):
         dataset['target'].append(item['type'])
     
     return dataset
-        
+

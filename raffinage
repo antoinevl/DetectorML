@@ -1,0 +1,27 @@
+R0
+main_benign()
+main_malicious()
+
+R1: main_benign()
+
+urls_to_analyse = urls_from_crawler(file)
+
+for u in urls_to_analyse():
+   check = 1
+   if is_in_db(u, db):
+      check = has_new_features_to_add(url)
+        |
+        --> 0 if no new features
+            1 else
+   if check == 1:
+      METHOD = 'Selenium'
+      UA = 'firefox'
+      if is_in_db(u,db):
+         url = URL_from_db(u)
+	  |
+          --> of type URL
+         if is_right_ua_in_db(url, UA, db) and is_right_method_in_db(url, METHOD, db)
+         process_url
+         update_url
+      else:
+         url = URL(u)
