@@ -13,3 +13,6 @@
   - [ ] Compare features / classifiers
 - [ ] Create a ZAP proxy extension
 - [ ] Performance
+
+## Issues
+SVM: takes only numerical values
