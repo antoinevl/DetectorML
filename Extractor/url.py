@@ -21,6 +21,7 @@ class URL:
     def __init__(self, url):
         self.name = url
         self.page = None
+        self.code = None
     
     def set_page(self, p):
         self.page = p
@@ -73,49 +74,65 @@ class URL:
 
     # Returns html and error code of the request
     def process(self, to_reload = True, user_agent, method):
-        output = {}
-        
-        # Parameters
-        if method == 'Selenium':
-            if user_agent == 'firefox':
-                print
-            elif user_agent == None:
-                print
-            else:
-                raise "Error in process_request. User agent: "+user_agent+" unknown."
-        
-        elif method == 'urllib2':
-            if user_agent == 'firefox':
-                req = urllib2.Request(self.name, headers={ 'User-Agent': 'Mozilla/5.0' })
-            elif user_agent == None: 
-                req = urllib2.Request(self.name)
-            else:
-                raise "Error in process_request. User agent: "+user_agent+" unknown."
-            
-            # Open and read    
-            try:
-                resp = urllib2.urlopen(req)
-            except urllib2.HTTPError as e:
-                output['code'] = e.code
-                output['page'] = ''
-            except urllib2.URLError as e:
-                output['code'] = -1
-                output['page'] = ''
-            except:
-                #print sys.exc_info()
-                output['code'] = -2
-                output['page'] = ''
-            else:
-                page = resp.read()
-                output['page'] = page
-                output['code'] = 200
-                  
-            
-        else:
-            raise "Error in process_request. Method: "+method+" unknown."
-        
-        self.page = output['page']
         self.user_agent = user_agent
         self.method = method
+        output = {}
+        
+        if to_reload == False:
+            output['page'] = self.page
+            print 'Warning in process: page of url '+self.name+' is None.' if (self.page == None) else 'Page of url '+self.name+' not reloaded.'
+            output['code'] = self.code
+            print 'Warning in process: code of url '+self.name+' is None.' if (self.page == None) else 'Code of url '+self.name+' not reloaded.'
+        else:
+            # Parameters
+            if method == 'Selenium':
+                output = process_selenium(user_agent)            
+            elif method == 'urllib2':
+                output = process_urllib2(user_agent)
+            else:
+                raise "Error in process_request. Method: "+method+" unknown."
+        
+        self.page = output['page']
+        self.code = output['code']
         
         return output  
+        
+def process_urllib2(user_agent):
+    
+    if user_agent == 'firefox':
+        req = urllib2.Request(self.name, headers={ 'User-Agent': 'Mozilla/5.0' })
+    elif user_agent == None: 
+        req = urllib2.Request(self.name)
+    else:
+        raise "Error in process_request. User agent: "+user_agent+" unknown."
+    
+    # Open and read    
+    try:
+        resp = urllib2.urlopen(req)
+    except urllib2.HTTPError as e:
+        output['code'] = e.code
+        output['page'] = ''
+    except urllib2.URLError as e:
+        output['code'] = -1
+        output['page'] = ''
+    except:
+        #print sys.exc_info()
+        output['code'] = -2
+        output['page'] = ''
+    else:
+        page = resp.read()
+        output['page'] = page
+        output['code'] = 200
+
+    return output
+
+def process_selenium(user_agent):
+    if user_agent == 'firefox':
+        print
+    elif user_agent == None:
+        print
+    else:
+        raise "Error in process_request. User agent: "+user_agent+" unknown."
+    output['page'] = 'YOOOO'
+    output['code'] = 200
+    return output

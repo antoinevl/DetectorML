@@ -40,8 +40,8 @@ malicious_urls_addr = '/home/avl/MSc-project/Crawler/malwaredomains-raw-recent'
 
 def main_benign():
     
-    METHOD = 'Selenium'
-    UA = 'firefox'        
+    METHOD = 'urllib2' # 'Selenium' or 'urllib2'
+    UA = 'firefox' # 'firefox' or None       
     urls_to_analyse = urls_from_crawler(benign_urls_addr)
     
     for u in urls_to_analyse():

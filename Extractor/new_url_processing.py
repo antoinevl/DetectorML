@@ -8,7 +8,7 @@ Created on Tue Jul 26 13:50:08 2016
 
 
 
-# process 
+# process
 # Update url
 # Refactor Add url
 # Logs
