@@ -5,9 +5,6 @@ Created on Tue Jul 26 13:50:08 2016
 @author: avl
 """
 
-
-
-
 # process
 # Update url
 # Refactor Add url
@@ -19,13 +16,10 @@ Created on Tue Jul 26 13:50:08 2016
 # Re-Crawling
 # Machine Learning part
 # 
-#
-#
-#
-
 
 import numpy as np
-from Extractor.url import URL
+from url import URL
+from datetime import date
 
 # Returns a list of all the urls in the collection
 def get_all_urls_db(collection):
@@ -74,27 +68,47 @@ def get_field_from_url(url_name, field_name, collection):
 
 # Update fields of an url (of Class URL) in the db
 # Updates existing fields if to_recompute == True
-def update_url_in_db(to_recompute = False, url, db):
+def update_url_in_db(url, collection, to_recompute = False):
     if to_recompute == True:
-        add_url_in_db()
-    return 1
+        add_url_in_db(url, collection)
+    else:
+        s_features = url.static_features()
+        d_features = url.dynamic_features()
+        s_features_to_add = {}
+        d_features_to_add = {}
+        
+        for sf in s_features:
+            if not is_feature_in_db(url.name, sf, 'static', collection):
+                s_features_to_add[sf] = s_features[sf]
+        for df in d_features:
+            if not is_feature_in_db(url.name, df, 'dynamic', collection):
+                d_features_to_add[df] = d_features[df]
+                
+        update_dict_features(url.name, s_features_to_add, collection)
+        update_dict_features(url.name, d_features_to_add, collection)
+        
+        update_field(url.name, 'last_modified', today_dmy(), collection)
     
-def add_url_in_db(url, db):
+def add_url_in_db(url, collection):
     result = []
     url_name = url.name
+    url_type = url.type
+    url_description = url.description
+    url_code = url.code
     dic_collection = collection.find_one({"url":url_name})
     if (dic_collection != None):
         print("URL: "+url_name+" already stored in the collection.")
-    elif (dic_collection == None) and (code != 200):
-        print("URL: "+url_name+" not available (code "+str(code)+"). Won't be stored into the database.")
+    elif (dic_collection == None) and (url_code != 200):
+        print("URL: "+url_name+" not available (url_code "+str(url_code)+"). Won't be stored into the database.")
     else:
         s = {
                 "url": url_name,
-                "description": description,
+                "description": url_description,
                 "type": url_type,
+                "code": url_code,
                 "method":url.method,
                 "user_agent": url.user_agent,
-                "date": today_dmy(),
+                "added_date": today_dmy(),
                 "last_modified": today_dmy(),
                 "static_features": [{
                 }],
@@ -128,7 +142,7 @@ def add_url_in_db(url, db):
 
 # update/add a feature of a certain URL in the database
 # feature_type is either 'static' or 'dynamic'
-def update_feature(url, feature_name, feature_type, new_value, collection):
+def update_feature(url_name, feature_name, feature_type, new_value, collection):
     # what type of feature to update
     if (feature_type == 'static'):
         s = 'static_features.0.'
@@ -139,14 +153,60 @@ def update_feature(url, feature_name, feature_type, new_value, collection):
     s += feature_name
 	
     # update in mongodb
-    update_date(url,collection)
+    # update_date(url,collection)
     result = collection.update_one(
-        {"url": url},
+        {"url": url_name},
         {"$set": {s: new_value}})
         
-    print "Feature: "+feature_name+" updated."
+    print "Feature '"+feature_name+"' updated."
     return result
 
+# Updates a dictionnary of features
+def update_dict_features(url_name, dico, collection):
+    for i in dico:
+        update_feature(url_name, i, dico[i], collection)
+    
 
+# Returns whether a feature is present in the db or not for a certain url
+def is_feature_in_db(url_name, feature_name, feature_type, collection):
+    # what type of feature to update
+    if (feature_type == 'static'):
+        s = 'static_features'
+    elif (feature_type == 'dynamic'):
+        s = 'dynamic_features'
+    else:
+        print "Error in 'is_feature_in_db': did not indicate if static or dynamic feature."    
+    check = 0
+    items = collection.find()
+    for item in items:
+        if feature_name in item[s][0]:
+            check += 1
+    return (check > 0)
+
+# Outputs a string of the date
+# Example: 101216 = 10th of December 2016
 def today_dmy():
     return date.today().strftime('%d%m%y')
+    
+# Deletes all urls with letter_count == 0
+def sanitize_db(collection):
+    items = collection.find()
+    for item in items:
+        if (item['static_features'][0]['letter_count']==0):
+            del_url(item['url'], collection)
+            
+# Deletes a certain url from the db        
+def del_url(url_name, collection):
+    collection.delete_many({'url':url_name})
+
+# Deletes all the urls from the db
+def del_all_urls(collection):
+    items = collection.find()
+    for item in items:
+        del_url(item['url'], collection)
+        
+def update_field(url_name, field_name, field_value, collection):
+	result = collection.update_one(
+		{"url": url_name},
+    		{"$set": {field_name: field_value}})
+	return result

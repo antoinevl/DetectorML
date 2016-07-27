@@ -18,8 +18,10 @@ class URL:
     #resp = urllib2.urlopen(url_name)
     #page = resp.read()
 
-    def __init__(self, url):
-        self.name = url
+    def __init__(self, url_name, url_type, url_description = None):
+        self.name = url_name
+        self.type = url_type
+        self.description = url_description
         self.page = None
         self.code = None
     
@@ -31,7 +33,7 @@ class URL:
                            
     script_token_start = "<script>"
     script_token_end = "</script>"
-
+    
     def js_list(self):
         javascript = []
         ind_start = 0
@@ -73,9 +75,12 @@ class URL:
         names['All'] = np.concatenate((names['Static'], names['Dynamic']))
 
     # Returns html and error code of the request
-    def process(self, to_reload = True, user_agent, method):
-        self.user_agent = user_agent
-        self.method = method
+    def process(self, user_agent = None, method = None, to_reload = True):
+        # Case where user_agent and method are already instantiated
+        if user_agent != None and method != None:
+            self.user_agent = user_agent
+            self.method = method
+            
         output = {}
         
         if to_reload == False:
@@ -86,53 +91,54 @@ class URL:
         else:
             # Parameters
             if method == 'Selenium':
-                output = process_selenium(user_agent)            
+                output = self.process_selenium(user_agent)            
             elif method == 'urllib2':
-                output = process_urllib2(user_agent)
+                output = self.process_urllib2(user_agent)
             else:
                 raise "Error in process_request. Method: "+method+" unknown."
         
         self.page = output['page']
         self.code = output['code']
         
-        return output  
+        return output
         
-def process_urllib2(user_agent):
+    def process_urllib2(self, user_agent):
+        output = {}        
+        if user_agent == 'firefox':
+            req = urllib2.Request(self.name, headers={ 'User-Agent': 'Mozilla/5.0' })
+        elif user_agent == None: 
+            req = urllib2.Request(self.name)
+        else:
+            raise "Error in process_request. User agent: "+user_agent+" unknown."
+        
+        # Open and read    
+        try:
+            resp = urllib2.urlopen(req)
+        except urllib2.HTTPError as e:
+            output['code'] = e.code
+            output['page'] = ''
+        except urllib2.URLError as e:
+            output['code'] = -1
+            output['page'] = ''
+        except:
+            #print sys.exc_info()
+            output['code'] = -2
+            output['page'] = ''
+        else:
+            page = resp.read()
+            output['page'] = page
+            output['code'] = 200
     
-    if user_agent == 'firefox':
-        req = urllib2.Request(self.name, headers={ 'User-Agent': 'Mozilla/5.0' })
-    elif user_agent == None: 
-        req = urllib2.Request(self.name)
-    else:
-        raise "Error in process_request. User agent: "+user_agent+" unknown."
-    
-    # Open and read    
-    try:
-        resp = urllib2.urlopen(req)
-    except urllib2.HTTPError as e:
-        output['code'] = e.code
-        output['page'] = ''
-    except urllib2.URLError as e:
-        output['code'] = -1
-        output['page'] = ''
-    except:
-        #print sys.exc_info()
-        output['code'] = -2
-        output['page'] = ''
-    else:
-        page = resp.read()
-        output['page'] = page
+        return output
+        
+    def process_selenium(self, user_agent):
+        output = {}
+        if user_agent == 'firefox':
+            print
+        elif user_agent == None:
+            print
+        else:
+            raise "Error in process_request. User agent: "+user_agent+" unknown."
+        output['page'] = 'YOOOO'
         output['code'] = 200
-
-    return output
-
-def process_selenium(user_agent):
-    if user_agent == 'firefox':
-        print
-    elif user_agent == None:
-        print
-    else:
-        raise "Error in process_request. User agent: "+user_agent+" unknown."
-    output['page'] = 'YOOOO'
-    output['code'] = 200
-    return output
+        return output
