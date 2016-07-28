@@ -6,7 +6,7 @@ Created on Tue Jul 26 13:50:08 2016
 """
 
 # process
-# Update url
+# Update url -----> Deleteeees
 # Refactor Add url
 # Logs
 # Tests
@@ -40,7 +40,7 @@ def has_new_features_to_add(url_name, collection):
     feat_names_db = get_feature_names(url_name, collection)
     return sorted(feat_names_url['All']) == sorted(feat_names_db['All'])
 
-# Returns collection of feature names for an url
+# Returns collection of feature names for an url in the db
 def get_feature_names(url_name, collection):
     items = collection.find()
     for item in items:
@@ -77,15 +77,32 @@ def update_url_in_db(url, collection, to_recompute = False):
         s_features_to_add = {}
         d_features_to_add = {}
         
+        # Get features that are not present in the db
         for sf in s_features:
             if not is_feature_in_db(url.name, sf, 'static', collection):
                 s_features_to_add[sf] = s_features[sf]
         for df in d_features:
             if not is_feature_in_db(url.name, df, 'dynamic', collection):
                 d_features_to_add[df] = d_features[df]
-                
-        update_dict_features(url.name, s_features_to_add, collection)
-        update_dict_features(url.name, d_features_to_add, collection)
+        # Update these features
+        update_dict_features(url.name, s_features_to_add, 'static', collection)
+        update_dict_features(url.name, d_features_to_add, 'dynamic', collection)
+        
+        # Get features that are present in the db but not in the URL class
+        # in order to remove them from the db
+        features_in_db = get_feature_names(url.name, collection)
+        features_in_URL = url.get_feature_names()
+        
+        features_to_remove_from_db = {'Static':[],'Dynamic':[], 'All':[]}
+        for sf in features_in_db:
+            if not sf in features_in_URL['Static']:
+                features_to_remove_from_db['Static'].append(sf)   
+        for df in d_features:
+            if not df in features_in_URL['Dynamic']:
+                features_to_remove_from_db['Dynamic'].append(df)        
+        # Remove these features from the db
+        for 
+        
         
         update_field(url.name, 'last_modified', today_dmy(), collection)
     
@@ -162,10 +179,25 @@ def update_feature(url_name, feature_name, feature_type, new_value, collection):
     return result
 
 # Updates a dictionnary of features
-def update_dict_features(url_name, dico, collection):
+def update_dict_features(url_name, dico, feature_type, collection):
     for i in dico:
-        update_feature(url_name, i, dico[i], collection)
+        update_feature(url_name, i, feature_type, dico[i], collection)
     
+# delete a feature in the database
+# feature_type is either 'static' or 'dynamic'
+def del_feature(feature_name, feature_type, collection):
+	# what type of feature to delete
+	if (feature_type == 'static'):
+		s = 'static_features.0.'
+	elif (feature_type == 'dynamic'):
+		s = 'dynamic_features.0.'
+	else:
+		print "Error in 'del_feature': did not indicate if static or dynamic feature."
+	s += feature_name
+	
+	# delete in mongodb
+	result = collection.update({}, {'$unset': {s:1}}, multi=True)
+	return result
 
 # Returns whether a feature is present in the db or not for a certain url
 def is_feature_in_db(url_name, feature_name, feature_type, collection):

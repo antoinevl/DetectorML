@@ -28,6 +28,7 @@ from Extractor.new_url_processing import check_field_value_in_url
 from Extractor.new_url_processing import del_all_urls
 from Extractor.new_url_processing import del_url
 from Extractor.new_url_processing import add_url_in_db
+from Extractor.new_url_processing import update_url_in_db
 from Extractor.new_url_processing import is_feature_in_db
 
 #################################### MAIN #####################################
@@ -41,27 +42,42 @@ benign_urls_addr = '/home/avl/MSc-project/Crawler/alexa-top500'
 malicious_urls_addr = '/home/avl/MSc-project/Crawler/malwaredomains-raw-recent'
 
 
-#def main_benign():
-#    
-#    METHOD = 'urllib2' # 'Selenium' or 'urllib2'
-#    UA = 'firefox' # 'firefox' or None       
-#    urls_to_analyse = urls_from_crawler(benign_urls_addr)
-#    
-#    for u in urls_to_analyse():
-#        check = 1
-#        if is_in_db(u, db_urls):
-#            url = URL(u)
-#            check = has_new_features_to_add(url, db_urls)   # check = 0 if no new features
-#                                                            #         1 else
-#            if check == True:
-#                if is_in_db(u, db):
-#                    RELOAD = not(check_field_value_in_url(u, 'user_agent', UA, db_urls) and check_field_value_in_url(u, 'method', METHOD, db_urls)) # reload page if different UA and Method
-#                    url.process(to_reload = RELOAD, method = METHOD, user_agent = UA)
-#                    update_url_in_db(to_recompute = RELOAD, url, db_urls)
-#                else:
-#                    url.process(method = METHOD, user_agent = UA)
-#                    add_url_in_db(url, db_urls)
-
+def main_benign():
+    METHOD = 'urllib2' # 'Selenium' or 'urllib2'
+    UA = 'firefox' # 'firefox' or None       
+    urls_to_analyse = urls_from_crawler(benign_urls_addr)
+    
+    t = time.time()
+    cpt_benign = 0    
+    print("Starting benign extraction...")
+    
+    for u in urls_to_analyse:
+        
+        cpt_benign += 1
+        s1 = ''
+        if cpt_benign%50 == 0:
+            s1 = "\n Time elapsed: "+str(time.time() - t)+"\n"            
+        s =s1+str(cpt_benign)+ " - "
+        print s,
+        
+        url = URL(u, 'Benign')
+        check = 1
+        if is_in_db(u, db_urls):
+            check = has_new_features_to_add(url, db_urls)   # check = 0 if no new features
+                                                            #         1 else
+            if check == True:
+                if is_in_db(u, db):
+                    RELOAD = not(check_field_value_in_url(u, 'user_agent', UA, db_urls) and check_field_value_in_url(u, 'method', METHOD, db_urls)) # reload page if different UA and Method
+                    url.process(to_reload = RELOAD, method = METHOD, user_agent = UA)
+                    update_url_in_db(url, db_urls, to_recompute = RELOAD)
+                else:
+                    url.process(method = METHOD, user_agent = UA)
+                    add_url_in_db(url, db_urls)
+        else:
+            url.process(method = METHOD, user_agent = UA)
+            add_url_in_db(url, db_urls)
+        
+                
 ################################### PRINT #####################################
 def print_db():
     print "\n--------------------------------------------------------"
@@ -129,10 +145,19 @@ def test_is_not_feature_in_db():
     assert not is_feature_in_db('http://google.co.uk', 'blablablabla', 'static', db_urls)
     del_url(url_name, db_urls)
 
-def test_update_fico_features():
-    # TODO
-    print 
+def test_update():
+    url_name = 'http://google.co.uk'
+    METHOD = 'urllib2'
+    UA = 'firefox'
+    url = URL(url_name, 'Benign')
+    url.process(method = METHOD, user_agent = UA)
+    update_url_in_db(url, db_urls, to_recompute = False)
+    print_db()
+    del_url(url_name, db_urls)
+    
 
 if __name__=='__main__':
-    #test_add_url()
-    test_is_not_feature_in_db()
+    # test_add_url()
+    # test_update()
+    main_benign()
+    print_db()

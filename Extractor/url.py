@@ -58,7 +58,7 @@ class URL:
         static_features['js_keyword_count'] = se.keyword_count(self.js_all(), 'eval')
         static_features['js_most_frequent_word'] = se.most_frequent_word(self.js_all())
         return static_features
-        
+    
     def dynamic_features(self):
         dynamic_features = {}
         dynamic_features['feat1'] = de.feature1(self.page)
@@ -73,6 +73,7 @@ class URL:
         for i in d_feat:
             names['Dynamic'].append(i)
         names['All'] = np.concatenate((names['Static'], names['Dynamic']))
+        return names
 
     # Returns html and error code of the request
     def process(self, user_agent = None, method = None, to_reload = True):
