@@ -60,7 +60,7 @@ def main_benign():
         s =s1+str(cpt_benign)+ " - "
         print s,
         
-        url = URL(u, 'Benign')
+        url = URL(u, url_type = 'Benign')
         check = 1
         if is_in_db(u, db_urls):
             check = has_new_features_to_add(url, db_urls)   # check = 0 if no new features
@@ -119,7 +119,7 @@ def test_add_url():
     url_name = 'http://google.co.uk'
     METHOD = 'urllib2'
     UA = 'firefox'
-    url = URL(url_name, 'Benign')
+    url = URL(url_name, url_type = 'Benign')
     url.process(method = METHOD, user_agent = UA)
     add_url_in_db(url, db_urls)
     print_db()
@@ -129,7 +129,7 @@ def test_is_feature_in_db():
     url_name = 'http://google.co.uk'
     METHOD = 'urllib2'
     UA = 'firefox'
-    url = URL(url_name, 'Benign')
+    url = URL(url_name, url_type = 'Benign')
     url.process(method = METHOD, user_agent = UA)
     add_url_in_db(url, db_urls)
     assert is_feature_in_db('http://google.co.uk', 'letter_count', 'static', db_urls)
@@ -139,7 +139,7 @@ def test_is_not_feature_in_db():
     url_name = 'http://google.co.uk'
     METHOD = 'urllib2'
     UA = 'firefox'
-    url = URL(url_name, 'Benign')
+    url = URL(url_name, url_type = 'Benign')
     url.process(method = METHOD, user_agent = UA)
     add_url_in_db(url, db_urls)
     assert not is_feature_in_db('http://google.co.uk', 'blablablabla', 'static', db_urls)
@@ -149,15 +149,22 @@ def test_update():
     url_name = 'http://google.co.uk'
     METHOD = 'urllib2'
     UA = 'firefox'
-    url = URL(url_name, 'Benign')
+    url = URL(url_name, url_type = 'Benign')
     url.process(method = METHOD, user_agent = UA)
     update_url_in_db(url, db_urls, to_recompute = False)
     print_db()
     del_url(url_name, db_urls)
-    
+
+def test_del():
+    url_name = 'http://google.co.uk'
+    METHOD = 'urllib2'
+    UA = 'firefox'
+    url = URL(url_name, url_type = 'Benign')
+    url.process(method = METHOD, user_agent = UA)
+    # add_url_in_db(url, db_urls)
+    update_url_in_db(url, db_urls, to_recompute = False)
 
 if __name__=='__main__':
-    # test_add_url()
-    # test_update()
+    del_all_urls(db_urls)
     main_benign()
     print_db()

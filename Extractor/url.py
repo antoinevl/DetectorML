@@ -18,12 +18,12 @@ class URL:
     #resp = urllib2.urlopen(url_name)
     #page = resp.read()
 
-    def __init__(self, url_name, url_type, url_description = None):
+    def __init__(self, url_name, url_type = None, url_description = None):
         self.name = url_name
         self.type = url_type
         self.description = url_description
-        self.page = None
-        self.code = None
+        self.page = ''
+        self.code = 0
     
     def set_page(self, p):
         self.page = p
@@ -61,7 +61,7 @@ class URL:
     
     def dynamic_features(self):
         dynamic_features = {}
-        dynamic_features['feat1'] = de.feature1(self.page)
+        #dynamic_features['feat1'] = de.feature1(self.page)
         return dynamic_features
 
     def get_feature_names(self):

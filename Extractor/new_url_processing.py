@@ -20,6 +20,7 @@ Created on Tue Jul 26 13:50:08 2016
 import numpy as np
 from url import URL
 from datetime import date
+from pprint import pprint
 
 # Returns a list of all the urls in the collection
 def get_all_urls_db(collection):
@@ -43,9 +44,9 @@ def has_new_features_to_add(url_name, collection):
 # Returns collection of feature names for an url in the db
 def get_feature_names(url_name, collection):
     items = collection.find()
+    names = {'Static':[],'Dynamic':[], 'All':[]}
     for item in items:
         if item['url']==url_name:
-            names = {'Static':[],'Dynamic':[], 'All':[]}
             for i in item['static_features'][0]:
                 names['Static'].append(i)
             for i in item['dynamic_features'][0]:
@@ -94,15 +95,15 @@ def update_url_in_db(url, collection, to_recompute = False):
         features_in_URL = url.get_feature_names()
         
         features_to_remove_from_db = {'Static':[],'Dynamic':[], 'All':[]}
-        for sf in features_in_db:
+        for sf in features_in_db['Static']:
             if not sf in features_in_URL['Static']:
                 features_to_remove_from_db['Static'].append(sf)   
-        for df in d_features:
+        for df in features_in_db['Dynamic']:
             if not df in features_in_URL['Dynamic']:
                 features_to_remove_from_db['Dynamic'].append(df)        
         # Remove these features from the db
-        for 
-        
+        del_list_features(url.name, features_to_remove_from_db['Static'], 'static', collection)
+        del_list_features(url.name, features_to_remove_from_db['Dynamic'], 'dynamic', collection)
         
         update_field(url.name, 'last_modified', today_dmy(), collection)
     
@@ -185,7 +186,7 @@ def update_dict_features(url_name, dico, feature_type, collection):
     
 # delete a feature in the database
 # feature_type is either 'static' or 'dynamic'
-def del_feature(feature_name, feature_type, collection):
+def del_feature(url_name, feature_name, feature_type, collection):
 	# what type of feature to delete
 	if (feature_type == 'static'):
 		s = 'static_features.0.'
@@ -196,8 +197,15 @@ def del_feature(feature_name, feature_type, collection):
 	s += feature_name
 	
 	# delete in mongodb
+	#result = collection.update({"url": url_name}, {'$unset': {s:1}}, multi=True)
 	result = collection.update({}, {'$unset': {s:1}}, multi=True)
 	return result
+
+# Deletes a dictionnary of features
+def del_list_features(url_name, l, feature_type, collection):
+    for i in l:
+        print i
+        del_feature(url_name, i, feature_type, collection)
 
 # Returns whether a feature is present in the db or not for a certain url
 def is_feature_in_db(url_name, feature_name, feature_type, collection):
