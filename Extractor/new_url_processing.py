@@ -20,7 +20,7 @@ Created on Tue Jul 26 13:50:08 2016
 import numpy as np
 from url import URL
 from datetime import date
-from pprint import pprint
+#from pprint import pprint
 
 # Returns a list of all the urls in the collection
 def get_all_urls_db(collection):
@@ -106,6 +106,8 @@ def update_url_in_db(url, collection, to_recompute = False):
         del_list_features(url.name, features_to_remove_from_db['Dynamic'], 'dynamic', collection)
         
         update_field(url.name, 'last_modified', today_dmy(), collection)
+        
+        print "URL: "+url.name+" updated into the database."
     
 def add_url_in_db(url, collection):
     result = []
@@ -176,7 +178,7 @@ def update_feature(url_name, feature_name, feature_type, new_value, collection):
         {"url": url_name},
         {"$set": {s: new_value}})
         
-    print "Feature '"+feature_name+"' updated."
+    #print "Feature '"+feature_name+"' updated."
     return result
 
 # Updates a dictionnary of features

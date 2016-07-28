@@ -73,6 +73,8 @@ def main_benign():
                 else:
                     url.process(method = METHOD, user_agent = UA)
                     add_url_in_db(url, db_urls)
+            else:
+                print "URL: "+u+" already stored and not modified."
         else:
             url.process(method = METHOD, user_agent = UA)
             add_url_in_db(url, db_urls)
@@ -165,6 +167,6 @@ def test_del():
     update_url_in_db(url, db_urls, to_recompute = False)
 
 if __name__=='__main__':
-    del_all_urls(db_urls)
+    #del_all_urls(db_urls)
     main_benign()
-    print_db()
+    #print_db()
