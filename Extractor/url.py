@@ -12,6 +12,8 @@ import dynamic_extractor as de
 import sys
 import numpy as np
 from datetime import date
+import new_url_processing as up
+from base64 import b64decode
 
 class URL:
     #url_name = 'http://www.google.com/'
@@ -76,7 +78,7 @@ class URL:
         return names
 
     # Returns html and error code of the request
-    def process(self, user_agent = None, method = None, to_reload = True):
+    def process(self, user_agent = None, method = None, to_reload = True, collection = None):
         # Case where user_agent and method are already instantiated
         if user_agent != None and method != None:
             self.user_agent = user_agent
@@ -85,10 +87,11 @@ class URL:
         output = {}
         
         if to_reload == False:
-            output['page'] = self.page
-            print 'Warning in process: page of url '+self.name+' is None.' if (self.page == None) else 'Page of url '+self.name+' not reloaded.'
-            output['code'] = self.code
-            print 'Warning in process: code of url '+self.name+' is None.' if (self.page == None) else 'Code of url '+self.name+' not reloaded.'
+            if collection != None:
+                output['page'] = b64decode(up.get_field_from_url(self.name, 'page_b64', collection))
+                output['code'] = up.get_field_from_url(self.name, 'code', collection)
+            else:
+                raise "Error in 'process': please specify collection name."
         else:
             # Parameters
             if method == 'Selenium':
@@ -110,7 +113,7 @@ class URL:
         elif user_agent == None: 
             req = urllib2.Request(self.name)
         else:
-            raise "Error in process_request. User agent: "+user_agent+" unknown."
+            raise "Error in 'process_request'. User agent '"+user_agent+"' unknown."
         
         # Open and read    
         try:

@@ -20,6 +20,7 @@ Created on Tue Jul 26 13:50:08 2016
 import numpy as np
 from url import URL
 from datetime import date
+from base64 import b64encode
 #from pprint import pprint
 
 # Returns a list of all the urls in the collection
@@ -123,6 +124,7 @@ def add_url_in_db(url, collection):
     else:
         s = {
                 "url": url_name,
+                "page_b64": b64encode(url.page),
                 "description": url_description,
                 "type": url_type,
                 "code": url_code,
@@ -246,7 +248,8 @@ def del_all_urls(collection):
     items = collection.find()
     for item in items:
         del_url(item['url'], collection)
-        
+
+# Updates a field of a url in the database
 def update_field(url_name, field_name, field_value, collection):
 	result = collection.update_one(
 		{"url": url_name},

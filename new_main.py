@@ -19,6 +19,7 @@ from sklearn import cross_validation
 from sklearn import svm
 
 from Crawler.crawler import urls_from_crawler
+from Crawler.crawler import get_fields_from_malicious_file
 from Extractor.new_url_processing import is_in_db
 from Extractor.new_url_processing import has_new_features_to_add
 from Extractor.url import URL
@@ -30,6 +31,7 @@ from Extractor.new_url_processing import del_url
 from Extractor.new_url_processing import add_url_in_db
 from Extractor.new_url_processing import update_url_in_db
 from Extractor.new_url_processing import is_feature_in_db
+from Extractor.new_url_processing import update_field
 
 #################################### MAIN #####################################
 # Variables
@@ -74,10 +76,51 @@ def main_benign():
                     url.process(method = METHOD, user_agent = UA)
                     add_url_in_db(url, db_urls)
             else:
-                print "URL: "+u+" already stored and not modified."
+                print "URL '"+u+"' already stored and not modified."
         else:
             url.process(method = METHOD, user_agent = UA)
             add_url_in_db(url, db_urls)
+
+def main_malicious():
+    METHOD = 'urllib2' # 'Selenium' or 'urllib2'
+    UA = 'firefox' # 'firefox' or None       
+    malicious_fields_lines = get_fields_from_malicious_file(malicious_urls_addr)
+    
+    t = time.time()
+    cpt_malicious = 0    
+    print("Starting malicious extraction...")
+    
+    for l in malicious_fields_lines:
+        u = l['url_name']
+        
+        cpt_malicious += 1
+        s1 = ''
+        if cpt_malicious%50 == 0:
+            s1 = "\n Time elapsed: "+str(time.time() - t)+"\n"            
+        s =s1+str(cpt_malicious)+ " - "
+        print s,
+        
+        url = URL(u, url_type = 'Malicious')
+        check = 1
+        if is_in_db(u, db_urls):
+            check = has_new_features_to_add(url, db_urls)   # check = 0 if no new features
+                                                            #         1 else
+            if check == True:
+                if is_in_db(u, db):
+                    RELOAD = not(check_field_value_in_url(u, 'user_agent', UA, db_urls) and check_field_value_in_url(u, 'method', METHOD, db_urls)) # reload page if different UA and Method
+                    url.process(to_reload = RELOAD, method = METHOD, user_agent = UA)
+                    update_url_in_db(url, db_urls, to_recompute = RELOAD)
+                else:
+                    url.process(method = METHOD, user_agent = UA)
+                    add_url_in_db(url, db_urls)
+            else:
+                print "URL '"+u+"' already stored and not modified."
+        else:
+            url.process(method = METHOD, user_agent = UA)
+            add_url_in_db(url, db_urls)
+            update_field(url.name, 'malicious_type', l['malicious_type'], db_urls)
+            update_field(url.name, 'malicious_src', l['malicious_src'], db_urls)
+            update_field(url.name, 'ip', l['ip'], db_urls)
         
                 
 ################################### PRINT #####################################
@@ -144,7 +187,7 @@ def test_is_not_feature_in_db():
     url = URL(url_name, url_type = 'Benign')
     url.process(method = METHOD, user_agent = UA)
     add_url_in_db(url, db_urls)
-    assert not is_feature_in_db('http://google.co.uk', 'blablablabla', 'static', db_urls)
+    assert not is_feature_in_db('http://google import get_field_from_url.co.uk', 'blablablabla', 'static', db_urls)
     del_url(url_name, db_urls)
 
 def test_update():
@@ -168,5 +211,6 @@ def test_del():
 
 if __name__=='__main__':
     #del_all_urls(db_urls)
-    main_benign()
+    #main_benign()
+    main_malicious()
     #print_db()
