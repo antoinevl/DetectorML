@@ -5,7 +5,6 @@ Created on Mon Jul 25 15:39:49 2016
 @author: avl
 """
 
-import base64
 import Extractor.url_extractor as ue
 from pymongo import MongoClient
 from pprint import pprint
@@ -33,7 +32,7 @@ from Extractor.new_url_processing import update_url_in_db
 from Extractor.new_url_processing import is_feature_in_db
 from Extractor.new_url_processing import update_field
 
-#################################### MAIN #####################################
+#%%################################# MAIN #####################################
 # Variables
 vm_url = '146.169.47.251'
 db_port = 27017
@@ -122,8 +121,7 @@ def main_malicious():
             update_field(url.name, 'malicious_src', l['malicious_src'], db_urls)
             update_field(url.name, 'ip', l['ip'], db_urls)
         
-                
-################################### PRINT #####################################
+#%%################################ PRINT #####################################
 def print_db():
     print "\n--------------------------------------------------------"
     print "Database"
@@ -148,8 +146,7 @@ def print_features():
         print " "+f,
     print "\n--------------------------------------------------------\n"
 
-
-################################### TESTS #####################################
+#%%################################ TESTS #####################################
 def test1():
     print is_in_db('http://www.google.co.uk/', db_urls)
     print is_in_db('http://www.google.co.uk', db_urls)
@@ -209,6 +206,7 @@ def test_del():
     # add_url_in_db(url, db_urls)
     update_url_in_db(url, db_urls, to_recompute = False)
 
+#%%
 if __name__=='__main__':
     #del_all_urls(db_urls)
     #main_benign()

@@ -19,8 +19,9 @@ def get_fields_from_malicious_line(line):
     return output
     
 def get_fields_from_malicious_file(f):
+    with open(f, 'r') as ff:
+        lines = ff.read().splitlines()
     output = []
-    lines = f.read().splitlines()
     for line in lines:
         output.append(get_fields_from_malicious_line(line))
     return output
