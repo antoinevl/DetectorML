@@ -48,6 +48,10 @@ def has_new_features_to_add(url_name, collection):
     feat_names_url = u.get_feature_names()
     feat_names_db = get_feature_names(url_name, collection)
     res = sorted(feat_names_url['All']) == sorted(feat_names_db['All'])
+    print ">>> feat URL: ",
+    print sorted(feat_names_url['All'])
+    print ">>> feat DB: ",
+    print sorted(feat_names_db['All'])
     return res
 
 # Returns collection of feature names for an url in the db
@@ -63,16 +67,33 @@ def get_feature_names(url_name, collection):
 
 # Returns whether a certain field has a certain value for a certain url
 def check_field_value_in_url(url_name, field_name, value, collection):
-    return get_field_from_url(url_name, field_name, collection)==value
+#    Old version:
+#    return get_field_from_url(url_name, field_name, collection)==value
+
+    # New version:
+    try:
+        collection.find({"url":url_name, field_name:value}).limit(1).next()
+    except:
+        return False
+    else:
+        return True
+
 
 # Returns the value of a certain field from a certain url
 def get_field_from_url(url_name, field_name, collection):
-    items = collection.find()
-    value = -1    
-    for item in items:
-        if item['url'] == url_name :
-            value = item[field_name]
-    return value
+# Old version:
+#    items = collection.find()
+#    value = -1    
+#    for item in items:
+#        if item['url'] == url_name :
+#            value = item[field_name]
+#    return value
+    try:
+        item = collection.find({"url":url_name}).limit(1).next()
+    except:
+        raise "Error in 'get_field_from_url': no such url in the database."
+    else:
+        return item[field_name]
 
 # Update fields of an url (of Class URL) in the db
 # Updates existing fields if to_recompute == True
@@ -92,6 +113,7 @@ def update_url_in_db(url, collection, to_recompute = False):
         for df in d_features:
             if not is_feature_in_db(url.name, df, 'dynamic', collection):
                 d_features_to_add[df] = d_features[df]
+
         # Update these features
         update_dict_features(url.name, s_features_to_add, 'static', collection)
         update_dict_features(url.name, d_features_to_add, 'dynamic', collection)
@@ -104,10 +126,11 @@ def update_url_in_db(url, collection, to_recompute = False):
         features_to_remove_from_db = {'Static':[],'Dynamic':[], 'All':[]}
         for sf in features_in_db['Static']:
             if not sf in features_in_URL['Static']:
-                features_to_remove_from_db['Static'].append(sf)   
+                features_to_remove_from_db['Static'].append(sf)
         for df in features_in_db['Dynamic']:
             if not df in features_in_URL['Dynamic']:
-                features_to_remove_from_db['Dynamic'].append(df)        
+                features_to_remove_from_db['Dynamic'].append(df)
+                
         # Remove these features from the db
         del_list_features(url.name, features_to_remove_from_db['Static'], 'static', collection)
         del_list_features(url.name, features_to_remove_from_db['Dynamic'], 'dynamic', collection)
@@ -226,12 +249,24 @@ def is_feature_in_db(url_name, feature_name, feature_type, collection):
         s = 'dynamic_features'
     else:
         print "Error in 'is_feature_in_db': did not indicate if static or dynamic feature."    
-    check = 0
-    items = collection.find()
-    for item in items:
+        
+# Old version
+#    check = 0
+#    items = collection.find()
+#    for item in items:
+#        if feature_name in item[s][0]:
+#            check += 1
+#    return (check > 0)
+    try:
+        item = collection.find({"url":url_name}).limit(1).next()
+    except:
+        raise "Error in 'is_feature_in_db': no such url in the database."
+    else:
         if feature_name in item[s][0]:
-            check += 1
-    return (check > 0)
+            return True
+        else:
+            return False
+    
 
 # Outputs a string of the date
 # Example: 101216 = 10th of December 2016
