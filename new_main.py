@@ -32,7 +32,10 @@ from Extractor.new_url_processing import update_url_in_db
 from Extractor.new_url_processing import is_feature_in_db
 from Extractor.new_url_processing import update_field
 
-#%%################################# MAIN #####################################
+################################## MAIN #####################################
+
+setup_t = time.time()
+
 # Variables
 vm_url = '146.169.47.251'
 db_port = 27017
@@ -42,6 +45,7 @@ db_urls = db.urls
 benign_urls_addr = '/home/avl/MSc-project/Crawler/alexa-top500'
 malicious_urls_addr = '/home/avl/MSc-project/Crawler/malwaredomains-raw-recent'
 
+print "Setup time: "+str(time.time()-setup_t)+"."
 
 def main_benign():
     METHOD = 'urllib2' # 'Selenium' or 'urllib2'
@@ -90,38 +94,54 @@ def main_malicious():
     print("Starting malicious extraction...")
     
     for l in malicious_fields_lines:
+        
         u = l['url_name']
         
         cpt_malicious += 1
         s1 = ''
-        if cpt_malicious%50 == 0:
-            s1 = "\n Time elapsed: "+str(time.time() - t)+"\n"            
+#        if cpt_malicious%50 == 0:
+#            s1 = "\n Time elapsed: "+str(time.time() - t)+"\n"            
         s =s1+str(cpt_malicious)+ " - "
-        print s,
+#        print s,
+        print s
         
         url = URL(u, url_type = 'Malicious')
+        print "> Exec time 'URL': "+str(time.time()-t)+"."        
+        
         check = 1
         if is_in_db(u, db_urls):
-            check = has_new_features_to_add(url, db_urls)   # check = 0 if no new features
+            
+            print "> Exec time loop 1a: "+str(time.time()-t)+"."
+            check = has_new_features_to_add(u, db_urls)   # check = 0 if no new features
                                                             #         1 else
+            print "> Exec time loop 1b: "+str(time.time()-t)+"."
             if check == True:
                 if is_in_db(u, db):
+                    print "> Exec time loop 2a: "+str(time.time()-t)+"."
                     RELOAD = not(check_field_value_in_url(u, 'user_agent', UA, db_urls) and check_field_value_in_url(u, 'method', METHOD, db_urls)) # reload page if different UA and Method
+                    print "> Exec time loop 2b: "+str(time.time()-t)+"."
                     url.process(to_reload = RELOAD, method = METHOD, user_agent = UA)
+                    print "> Exec time loop 2c 'process': "+str(time.time()-t)+"."
                     update_url_in_db(url, db_urls, to_recompute = RELOAD)
+                    print "> Exec time loop 2d 'update': "+str(time.time()-t)+"."
                 else:
                     url.process(method = METHOD, user_agent = UA)
+                    print "> Exec time loop 3a 'process': "+str(time.time()-t)+"."
                     add_url_in_db(url, db_urls)
+                    print "> Exec time loop 3b 'add': "+str(time.time()-t)+"."
             else:
                 print "URL '"+u+"' already stored and not modified."
         else:
             url.process(method = METHOD, user_agent = UA)
+            print "> Exec time loop 4a 'process': "+str(time.time()-t)+"."
             add_url_in_db(url, db_urls)
+            print "> Exec time loop 4b 'add': "+str(time.time()-t)+"."
             update_field(url.name, 'malicious_type', l['malicious_type'], db_urls)
             update_field(url.name, 'malicious_src', l['malicious_src'], db_urls)
             update_field(url.name, 'ip', l['ip'], db_urls)
+            print "> Exec time loop 4c 'update_field'x3 : "+str(time.time()-t)+"."
         
-#%%################################ PRINT #####################################
+################################# PRINT #####################################
 def print_db():
     print "\n--------------------------------------------------------"
     print "Database"
@@ -146,7 +166,7 @@ def print_features():
         print " "+f,
     print "\n--------------------------------------------------------\n"
 
-#%%################################ TESTS #####################################
+################################# TESTS #####################################
 def test1():
     print is_in_db('http://www.google.co.uk/', db_urls)
     print is_in_db('http://www.google.co.uk', db_urls)
@@ -206,7 +226,7 @@ def test_del():
     # add_url_in_db(url, db_urls)
     update_url_in_db(url, db_urls, to_recompute = False)
 
-#%%
+#%
 if __name__=='__main__':
     #del_all_urls(db_urls)
     #main_benign()

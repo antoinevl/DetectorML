@@ -14,6 +14,7 @@ import numpy as np
 from datetime import date
 import new_url_processing as up
 from base64 import b64decode
+import time
 
 class URL:
     #url_name = 'http://www.google.com/'
@@ -79,17 +80,25 @@ class URL:
 
     # Returns html and error code of the request
     def process(self, user_agent = None, method = None, to_reload = True, collection = None):
+        t = time.time()        
+        
         # Case where user_agent and method are already instantiated
         if user_agent != None and method != None:
             self.user_agent = user_agent
             self.method = method
-            
+        
+        print ">> process 1: "+str(time.time()-t)+"."       
+        
         output = {}
         
         if to_reload == False:
+            print ">> process 1.1a: "+str(time.time()-t)+"."
             if collection != None:
+                print ">> process 1.1a.1: "+str(time.time()-t)+"."
                 output['page'] = b64decode(up.get_field_from_url(self.name, 'page_b64', collection))
+                print ">> process 1.1a.2: "+str(time.time()-t)+"."
                 output['code'] = up.get_field_from_url(self.name, 'code', collection)
+                print ">> process 1.1a.3: "+str(time.time()-t)+"."
             else:
                 raise "Error in 'process': please specify collection name."
         else:
@@ -100,7 +109,7 @@ class URL:
                 output = self.process_urllib2(user_agent)
             else:
                 raise "Error in process_request. Method: "+method+" unknown."
-        
+        print ">> process 2: "+str(time.time()-t)+"."
         self.page = output['page']
         self.code = output['code']
         

@@ -21,6 +21,8 @@ import numpy as np
 from url import URL
 from datetime import date
 from base64 import b64encode
+import time
+from bson.json_util import dumps
 #from pprint import pprint
 
 # Returns a list of all the urls in the collection
@@ -30,29 +32,33 @@ def get_all_urls_db(collection):
     for item in items:
         urls.append(item['url'])
     return urls
-
+    
 # Returns whether a url is in db or not
 def is_in_db(url_name, collection):
-    return (url_name in get_all_urls_db(collection))
+    try:
+        collection.find({"url":url_name}).limit(1).next()
+    except:
+        return False
+    else:
+        return True
 
 # Returns whether an url stored in the db needs to be added new features
 def has_new_features_to_add(url_name, collection):
     u = URL(url_name)
     feat_names_url = u.get_feature_names()
     feat_names_db = get_feature_names(url_name, collection)
-    return sorted(feat_names_url['All']) == sorted(feat_names_db['All'])
+    res = sorted(feat_names_url['All']) == sorted(feat_names_db['All'])
+    return res
 
 # Returns collection of feature names for an url in the db
 def get_feature_names(url_name, collection):
-    items = collection.find()
+    item = collection.find({"url":url_name}).limit(1).next()
     names = {'Static':[],'Dynamic':[], 'All':[]}
-    for item in items:
-        if item['url']==url_name:
-            for i in item['static_features'][0]:
-                names['Static'].append(i)
-            for i in item['dynamic_features'][0]:
-                names['Dynamic'].append(i)
-            names['All'] = np.concatenate((names['Static'], names['Dynamic']))
+    for i in item['static_features'][0]:
+        names['Static'].append(i)
+    for i in item['dynamic_features'][0]:
+        names['Dynamic'].append(i)
+    names['All'] = np.concatenate((names['Static'], names['Dynamic']))
     return names
 
 # Returns whether a certain field has a certain value for a certain url
