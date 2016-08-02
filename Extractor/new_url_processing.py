@@ -48,10 +48,6 @@ def has_new_features_to_add(url_name, collection):
     feat_names_url = u.get_feature_names()
     feat_names_db = get_feature_names(url_name, collection)
     res = sorted(feat_names_url['All']) == sorted(feat_names_db['All'])
-    print ">>> feat URL: ",
-    print sorted(feat_names_url['All'])
-    print ">>> feat DB: ",
-    print sorted(feat_names_db['All'])
     return res
 
 # Returns collection of feature names for an url in the db

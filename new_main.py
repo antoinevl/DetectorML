@@ -53,44 +53,38 @@ def main_benign():
     UA = 'firefox' # 'firefox' or None       
     urls_to_analyse = urls_from_crawler(benign_urls_addr)
     
-    t = time.time()
     cpt_benign = 0    
     print("Starting benign extraction...")
     
+    urls_list = get_all_urls_db(db_urls)       
+    
     for u in urls_to_analyse:
         
-        cpt_benign += 1
-        s1 = ''
-        if cpt_benign%50 == 0:
-            s1 = "\n Time elapsed: "+str(time.time() - t)+"\n"            
-        s =s1+str(cpt_benign)+ " - "
+        cpt_benign += 1      
+        s = str(cpt_benign)+ " - "
         print s,
         
         url = URL(u, url_type = 'Benign')
-        check = 1
-        if is_in_db(u, db_urls):
-            check = has_new_features_to_add(url, db_urls)   # check = 0 if no new features
+#        if is_in_db(u, db_urls):
+        check_url_in_list = u in urls_list
+        if check_url_in_list:
+            check = has_new_features_to_add(u, db_urls)   # check = 0 if no new features
                                                             #         1 else
             if check == True:
-                if is_in_db(u, db):
-                    RELOAD = not(check_field_value_in_url(u, 'user_agent', UA, db_urls) and check_field_value_in_url(u, 'method', METHOD, db_urls)) # reload page if different UA and Method
-                    url.process(to_reload = RELOAD, method = METHOD, user_agent = UA)
-                    update_url_in_db(url, db_urls, to_recompute = RELOAD)
-                else:
-                    url.process(method = METHOD, user_agent = UA)
-                    add_url_in_db(url, db_urls)
+                RELOAD = not(check_field_value_in_url(u, 'user_agent', UA, db_urls) and check_field_value_in_url(u, 'method', METHOD, db_urls)) # reload page if different UA and Method
+                url.process(to_reload = RELOAD, method = METHOD, user_agent = UA, collection = db_urls)
+                update_url_in_db(url, db_urls, to_recompute = RELOAD)
             else:
                 print "URL '"+u+"' already stored and not modified."
         else:
             url.process(method = METHOD, user_agent = UA)
             add_url_in_db(url, db_urls)
-
+            
 def main_malicious():
     METHOD = 'urllib2' # 'Selenium' or 'urllib2'
     UA = 'firefox' # 'firefox' or None       
     malicious_fields_lines = get_fields_from_malicious_file(malicious_urls_addr)
     
-    t = time.time()
     cpt_malicious = 0    
     print("Starting malicious extraction...")
     
@@ -100,50 +94,30 @@ def main_malicious():
         
         u = l['url_name']
         
-        cpt_malicious += 1
-        s1 = ''
-#        if cpt_malicious%50 == 0:
-#            s1 = "\n Time elapsed: "+str(time.time() - t)+"\n"            
-        s =s1+str(cpt_malicious)+ " - "
-#        print s,
-        print s
+        cpt_malicious += 1          
+        s =str(cpt_malicious)+ " - "
+        print s,
         
-        url = URL(u, url_type = 'Malicious')
-        print "> Exec time 'URL': "+str(time.time()-t)+"."        
+        url = URL(u, url_type = 'Malicious')   
         
         check = 1
 #        if is_in_db(u, db_urls):
-        print "> Test check_url_in_list 1: "+str(time.time()-t)+"."
         check_url_in_list = u in urls_list
-        print "> Test check_url_in_list 2: "+str(time.time()-t)+"."
-        print "> Test check_url_in_db 1: "+str(time.time()-t)+"."
-        check_url_in_db = is_in_db(u, db_urls)
-        print "> Test check_url_in_db 2: "+str(time.time()-t)+"."
-        if u in urls_list:
-            
-            print "> Exec time loop 1a: "+str(time.time()-t)+"."
+        if check_url_in_list:
             check = has_new_features_to_add(u, db_urls)   # check = 0 if no new features
                                                             #         1 else
-            print "> Exec time loop 1b: "+str(time.time()-t)+"."
             if check == True:
-                print "> Exec time loop 2a: "+str(time.time()-t)+"."
                 RELOAD = not(check_field_value_in_url(u, 'user_agent', UA, db_urls) and check_field_value_in_url(u, 'method', METHOD, db_urls)) # reload page if different UA and Method
-                print "> Exec time loop 2b: "+str(time.time()-t)+"."
                 url.process(to_reload = RELOAD, method = METHOD, user_agent = UA, collection = db_urls)
-                print "> Exec time loop 2c 'process': "+str(time.time()-t)+"."
                 update_url_in_db(url, db_urls, to_recompute = RELOAD)
-                print "> Exec time loop 2d 'update': "+str(time.time()-t)+"."
             else:
                 print "URL '"+u+"' already stored and not modified."
         else:
             url.process(method = METHOD, user_agent = UA)
-            print "> Exec time loop 4a 'process': "+str(time.time()-t)+"."
             add_url_in_db(url, db_urls)
-            print "> Exec time loop 4b 'add': "+str(time.time()-t)+"."
             update_field(url.name, 'malicious_type', l['malicious_type'], db_urls)
             update_field(url.name, 'malicious_src', l['malicious_src'], db_urls)
             update_field(url.name, 'ip', l['ip'], db_urls)
-            print "> Exec time loop 4c 'update_field'x3 : "+str(time.time()-t)+"."
             urls_list.append(u)
         
 ################################# PRINT #####################################
@@ -233,7 +207,14 @@ def test_del():
 
 #%
 if __name__=='__main__':
-    del_all_urls(db_urls)
+    #t = time.time()
+    #del_all_urls(db_urls)
     #main_benign()
-    main_malicious()
-    #print_db()
+    #t2 = time.time()
+    #main_malicious()
+    #t3 = time.time()    
+        
+    print_db()
+    
+    #print "\n\n\nTime elapsed for main_benign: "+str(t2-t)+"."
+    #print "Time elapsed for main_benign: "+str(t3-t2)+"."
