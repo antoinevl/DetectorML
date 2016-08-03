@@ -33,6 +33,22 @@ def get_all_urls_db(collection):
         urls.append(item['url'])
     return urls
     
+def get_benign_urls_db(collection):
+    urls = []
+    items = collection.find()
+    for item in items:
+        if item['type']=='Benign':
+            urls.append(item['url'])
+    return urls
+    
+def get_malicious_urls_db(collection):
+    urls = []
+    items = collection.find()
+    for item in items:
+        if item['type']=='Malicious':
+            urls.append(item['url'])
+    return urls
+    
 # Returns whether a url is in db or not
 def is_in_db(url_name, collection):
     try:
@@ -63,10 +79,6 @@ def get_feature_names(url_name, collection):
 
 # Returns whether a certain field has a certain value for a certain url
 def check_field_value_in_url(url_name, field_name, value, collection):
-#    Old version:
-#    return get_field_from_url(url_name, field_name, collection)==value
-
-    # New version:
     try:
         collection.find({"url":url_name, field_name:value}).limit(1).next()
     except:
@@ -77,13 +89,6 @@ def check_field_value_in_url(url_name, field_name, value, collection):
 
 # Returns the value of a certain field from a certain url
 def get_field_from_url(url_name, field_name, collection):
-# Old version:
-#    items = collection.find()
-#    value = -1    
-#    for item in items:
-#        if item['url'] == url_name :
-#            value = item[field_name]
-#    return value
     try:
         item = collection.find({"url":url_name}).limit(1).next()
     except:
@@ -226,14 +231,13 @@ def del_feature(url_name, feature_name, feature_type, collection):
 	s += feature_name
 	
 	# delete in mongodb
-	#result = collection.update({"url": url_name}, {'$unset': {s:1}}, multi=True)
-	result = collection.update({}, {'$unset': {s:1}}, multi=True)
+	result = collection.update({"url": url_name}, {'$unset': {s:1}}, multi=True)
+	#result = collection.update({}, {'$unset': {s:1}}, multi=True)
 	return result
 
 # Deletes a dictionnary of features
 def del_list_features(url_name, l, feature_type, collection):
     for i in l:
-        print i
         del_feature(url_name, i, feature_type, collection)
 
 # Returns whether a feature is present in the db or not for a certain url
@@ -245,14 +249,7 @@ def is_feature_in_db(url_name, feature_name, feature_type, collection):
         s = 'dynamic_features'
     else:
         print "Error in 'is_feature_in_db': did not indicate if static or dynamic feature."    
-        
-# Old version
-#    check = 0
-#    items = collection.find()
-#    for item in items:
-#        if feature_name in item[s][0]:
-#            check += 1
-#    return (check > 0)
+
     try:
         item = collection.find({"url":url_name}).limit(1).next()
     except:
@@ -282,9 +279,7 @@ def del_url(url_name, collection):
 
 # Deletes all the urls from the db
 def del_all_urls(collection):
-    items = collection.find()
-    for item in items:
-        del_url(item['url'], collection)
+    collection.delete_many({})
 
 # Updates a field of a url in the database
 def update_field(url_name, field_name, field_value, collection):
@@ -292,3 +287,7 @@ def update_field(url_name, field_name, field_value, collection):
 		{"url": url_name},
     		{"$set": {field_name: field_value}})
 	return result
+ 
+# Count urls in db that have type url_type
+def count_type(url_type, collection):
+    return collection.find({"type":url_type}).count()

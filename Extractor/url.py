@@ -6,15 +6,15 @@ Created on Tue Jul 26 14:34:35 2016
 """
 
 
-import urllib2
+import urllib2, httplib
 import static_extractor as se
 import dynamic_extractor as de
-import sys
+#import sys
 import numpy as np
-from datetime import date
+#from datetime import date
 import new_url_processing as up
 from base64 import b64decode
-import time
+#import time
 
 class URL:
     #url_name = 'http://www.google.com/'
@@ -139,9 +139,14 @@ class URL:
             output['code'] = -2
             output['page'] = ''
         else:
-            page = resp.read()
-            output['page'] = page
-            output['code'] = 200
+            try:
+                page = resp.read()
+            except httplib.IncompleteRead, e:
+                output['code'] = -3
+                output['page'] = ''
+            else:
+                output['page'] = page
+                output['code'] = 200
     
         return output
         
