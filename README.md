@@ -21,7 +21,8 @@
 - [ ] [Unit testing](https://docs.python.org/2/library/unittest.html)
 - [ ] sklearn
   - [ ] [SVM](http://scikit-learn.org/stable/modules/svm.html)
-  - [ ] [PCA](http://sebastianraschka.com/Articles/2014_pca_step_by_step.html): reduce the dimensionality of features in order to plot the results fairly.
+  - [ ] 2D plot: [here](http://scikit-learn.org/stable/auto_examples/svm/plot_svm_margin.html) and [here](http://scikit-learn.org/stable/auto_examples/svm/plot_iris.html)
+    - [ ] Need to reduce the dimension of feature space to 2: [PCA](http://sebastianraschka.com/Articles/2014_pca_step_by_step.html).
 - [ ] Logs
 - [ ] Stats / performance measures
 
