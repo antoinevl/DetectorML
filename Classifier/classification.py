@@ -7,6 +7,8 @@ Created on Wed Jun 29 17:10:45 2016
 
 import random
 
+from sklearn import svm
+
 def shuffle_dataset(dataset):
     ds = dataset
     data = dataset['data']
@@ -29,5 +31,10 @@ def shuffle_dataset(dataset):
     ds['data'] = d
     
     return ds
+    
+def svm_classification(X, y):
+    
+    
+    
     
     

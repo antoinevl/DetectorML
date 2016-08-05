@@ -1,9 +1,13 @@
 # MSc-project
 ## Roadmap
+- [ ] Sanitize benign and malicious datasets
 - [ ] Build a crawler and extract code from URLs
+  with:
+  - [x] urllib2
+  - [ ] Selenium Grid
 - [ ] Features
   - [ ] Choose best
-  - [ ] Extract from crawled webpages
+  - [x] Extract from crawled webpages
 - [ ] Machine Learning
   - [ ] Label items correctly 
   - [ ] Choose classifiers
@@ -11,8 +15,14 @@
   - [ ] Validation: 10-cross fold averaged
   - [ ] Extra validation dataset
   - [ ] Compare features / classifiers
-- [ ] Create a ZAP proxy extension
 - [ ] Performance
+
+## TODO
+- [ ] [Unit testing](https://docs.python.org/2/library/unittest.html)
+- [ ] sklearn
+  - [ ] [SVM](http://scikit-learn.org/stable/modules/svm.html)
+- [ ] Logs
+- [ ] Stats / performance measures
 
 ## Issues
 SVM: takes only numerical values
