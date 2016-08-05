@@ -21,6 +21,7 @@
 - [ ] [Unit testing](https://docs.python.org/2/library/unittest.html)
 - [ ] sklearn
   - [ ] [SVM](http://scikit-learn.org/stable/modules/svm.html)
+  - [ ] [PCA](http://sebastianraschka.com/Articles/2014_pca_step_by_step.html): reduce the dimensionality of features in order to plot the results fairly.
 - [ ] Logs
 - [ ] Stats / performance measures
 

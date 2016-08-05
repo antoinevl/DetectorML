@@ -33,8 +33,9 @@ def shuffle_dataset(dataset):
     return ds
     
 def svm_classification(X, y):
+    clf = svm.SVC() # also NuSVC and LinearSVC
+    clf.fit(X, y)
     
-    
-    
+    return clf
     
     
