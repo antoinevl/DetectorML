@@ -30,5 +30,5 @@
   - Save them somewhere... XML, Mongodb, text etc.
 
 ## Issues
-SVM: takes only numerical values
-Not same value for scores computed with exisitng methods and manually....... 
+- SVM: takes only numerical values
+- Not same value for scores computed with exisitng methods and manually....... 
