@@ -40,6 +40,7 @@ from Extractor.url_processing import get_malicious_urls_db
 from Extractor.url_processing import sanitize_db
 from Extractor.url_processing import count_type as count_db
 from Extractor.url_processing import get_field_from_url
+from Extractor.url_processing import db_to_arranged_urls
 
 import matplotlib.pyplot as plt
 
@@ -274,29 +275,38 @@ def test_del():
     # add_url_in_db(url, db_urls)
     update_url_in_db(url, db_urls, to_recompute = False)
 
+def test_db_to_arranged_urls():
+    db_to_arranged_urls()
+
+
 #%
 if __name__=='__main__':
-    t_start = time.time()
-    del_all_urls(db_urls)
-    t = time.time()
-    malicious_crawl()
-    t1 = time.time()
+    
+#    t_start = time.time()
+#    del_all_urls(db_urls)
+#    t = time.time()
+#    malicious_crawl()
+#    t1 = time.time()
     
     # TODO implement sanitization of malicious urls
     
-    main_benign()
-    t2 = time.time()
-    main_malicious()
-    t3 = time.time()    
-    sanitize_db(db_urls)
-    t4 = time.time()
-    print_count()
+#    main_benign()
+#    t2 = time.time()
+#    main_malicious()
+#    t3 = time.time()    
+#    sanitize_db(db_urls)
+#    t4 = time.time()
+#    print_count()
+    
+    
+    
+    
     
     print "Setup time: "+str(setup_t)+"."
-    print "Time elapsed for 'del_all_urls': "+str(t-t_start)+"."
-    print "Time elapsed for 'malicious_crawl': "+str(t1-t)+"."
-    print "Time elapsed for 'main_benign': "+str(t2-t1)+"."
-    print "Time elapsed for 'main_malicious': "+str(t3-t2)+"."
-    print "Time elapsed for 'sanitize_db': "+str(t4-t3)+"."
+#    print "Time elapsed for 'del_all_urls': "+str(t-t_start)+"."
+#    print "Time elapsed for 'malicious_crawl': "+str(t1-t)+"."
+#    print "Time elapsed for 'main_benign': "+str(t2-t1)+"."
+#    print "Time elapsed for 'main_malicious': "+str(t3-t2)+"."
+#    print "Time elapsed for 'sanitize_db': "+str(t4-t3)+"."
 
-#    plot_distribution_crawling_times()
+    plot_distribution_crawling_times()

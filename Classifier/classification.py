@@ -13,6 +13,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pprint import pprint
 
+
+
+
+
 def shuffle_dataset(dataset):
     ds = dataset
     data = dataset['data']

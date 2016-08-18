@@ -25,6 +25,53 @@ import time
 from bson.json_util import dumps
 #from pprint import pprint
 
+
+# Return output of the form:
+# {'features_names': <List of features names>,
+#  'urls': [{'name': <String: url name>
+#            'features_values': <List of features values>
+#           }, 
+#           { ... }, { ... }
+#          ]
+# }
+def db_to_arranged_urls(collection):
+    output = {}
+    output['features_names'] = get_features_names(collection)
+    output['urls'] = []
+    
+    items = collection.find()
+    for item in items:
+        u = {}
+        u['name'] = item['url']
+        u['features_values'] = [0]*get_features_length(collection)
+        
+        sf_list = item['static_features'][0]
+        df_list = item['dynamic_features'][0]        
+        
+        for sf in sf_list:
+            try:
+                u['features_values'][output['features_names'].index(sf)] = sf_list[sf]
+            except:
+                raise "Error in 'arranged_urls_from_db': no such feature exists."
+                
+        for df in df_list:
+            try:
+                u['features_values'][output['features_names'].index(df)] = df_list[df]
+            except:
+                raise "Error in 'arranged_urls_from_db': no such feature exists."
+        u['target'] = 1 if item['type'] == 'Malicious' else u['target'] = 0
+        
+        output['urls'].append(u)
+    
+    return output
+    
+def get_features_names(collection):
+    return 0
+    
+def get_features_length(collection):
+    return 0
+
+
 # Returns a list of all the urls in the collection
 def get_all_urls_db(collection):
     urls = []

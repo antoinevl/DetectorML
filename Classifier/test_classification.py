@@ -32,7 +32,7 @@ def test_SVM():
     pprint(y_pred)
 
 def test_plot_SVM():
-    # plot_svm(X, y)
+    plot_svm(X, y)
     return 1
 
 def test_cross_validation_SVM():
