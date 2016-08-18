@@ -15,8 +15,6 @@ from pprint import pprint
 
 
 
-
-
 def shuffle_dataset(dataset):
     ds = dataset
     data = dataset['data']

@@ -13,7 +13,7 @@ import time
 import Crawler.mw_crawl as mwc
 import Crawler.alexa_crawl as axc
 
-import Classifier.classification as cls
+from Classifier.classification import svm_clf,cross_validation_scores
 
 from sklearn import cross_validation
 from sklearn import svm
@@ -26,7 +26,7 @@ from Extractor.url_processing import is_in_db
 from Extractor.url_processing import has_new_features_to_add
 from Extractor.url import URL
 
-from Extractor.url_processing import get_feature_names as get_feature_names_url
+from Extractor.url_processing import get_feature_names_url
 from Extractor.url_processing import check_field_value_in_url
 from Extractor.url_processing import del_all_urls
 from Extractor.url_processing import del_url
@@ -276,7 +276,10 @@ def test_del():
     update_url_in_db(url, db_urls, to_recompute = False)
 
 def test_db_to_arranged_urls():
-    db_to_arranged_urls()
+    res = db_to_arranged_urls(db_urls)
+    print res['y']
+    
+    
 
 
 #%
@@ -298,9 +301,23 @@ if __name__=='__main__':
 #    t4 = time.time()
 #    print_count()
     
+    clf = svm_clf()
+    arranged_urls = db_to_arranged_urls(db_urls)
+    X = arranged_urls['X']
+    for a in X:
+        for b in a:
+            if not type(b) is int:
+                i = a.index(b)
+                a[i] = 0
+                
+    y = arranged_urls['y']
     
+    print X
+    print y    
     
+    cross_validation_scores(X, y, clf)
     
+#    print_db()
     
     print "Setup time: "+str(setup_t)+"."
 #    print "Time elapsed for 'del_all_urls': "+str(t-t_start)+"."
@@ -309,4 +326,4 @@ if __name__=='__main__':
 #    print "Time elapsed for 'main_malicious': "+str(t3-t2)+"."
 #    print "Time elapsed for 'sanitize_db': "+str(t4-t3)+"."
 
-    plot_distribution_crawling_times()
+#    plot_distribution_crawling_times()

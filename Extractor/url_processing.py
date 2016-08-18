@@ -36,14 +36,18 @@ from bson.json_util import dumps
 # }
 def db_to_arranged_urls(collection):
     output = {}
-    output['features_names'] = get_features_names(collection)
+    f_names = get_features_names(collection)
+    len_f_names = len(f_names)
+    output['features_names'] = f_names
     output['urls'] = []
+    X = []
+    y = []
     
     items = collection.find()
     for item in items:
         u = {}
         u['name'] = item['url']
-        u['features_values'] = [0]*get_features_length(collection)
+        u['features_values'] = [0]*len_f_names
         
         sf_list = item['static_features'][0]
         df_list = item['dynamic_features'][0]        
@@ -59,17 +63,36 @@ def db_to_arranged_urls(collection):
                 u['features_values'][output['features_names'].index(df)] = df_list[df]
             except:
                 raise "Error in 'arranged_urls_from_db': no such feature exists."
-        u['target'] = 1 if item['type'] == 'Malicious' else u['target'] = 0
+        if item['type'] == 'Malicious':
+            u['target'] = 1 
+        else:
+            u['target'] = 0
         
         output['urls'].append(u)
-    
+        X.append(u['features_values'])
+        y.append(u['target'])
+        
+    output['X'] = X
+    output['y'] = y
     return output
     
 def get_features_names(collection):
-    return 0
+    items = collection.find()
+    f_names = []
+    for item in items:
+        names = {'Static':[],'Dynamic':[], 'All':[]}
+        for i in item['static_features'][0]:
+            names['Static'].append(i)
+        for i in item['dynamic_features'][0]:
+            names['Dynamic'].append(i)
+        features_names = np.concatenate((names['Static'], names['Dynamic']))
+    for f in features_names:
+        if not f in f_names:
+            f_names.append(f)
+    return f_names
     
 def get_features_length(collection):
-    return 0
+    return len(get_features_names(collection))
 
 
 # Returns a list of all the urls in the collection
@@ -114,7 +137,7 @@ def has_new_features_to_add(url_name, collection):
     return res
 
 # Returns collection of feature names for an url in the db
-def get_feature_names(url_name, collection):
+def get_feature_names_url(url_name, collection):
     item = collection.find({"url":url_name}).limit(1).next()
     names = {'Static':[],'Dynamic':[], 'All':[]}
     for i in item['static_features'][0]:
@@ -168,7 +191,7 @@ def update_url_in_db(url, collection, to_recompute = False):
         
         # Get features that are present in the db but not in the URL class
         # in order to remove them from the db
-        features_in_db = get_feature_names(url.name, collection)
+        features_in_db = get_feature_names_url(url.name, collection)
         features_in_URL = url.get_feature_names()
         
         features_to_remove_from_db = {'Static':[],'Dynamic':[], 'All':[]}
