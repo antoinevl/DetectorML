@@ -7,12 +7,16 @@ Created on Tue Jul 26 14:34:35 2016
 
 
 import urllib2, httplib
+
+from selenium import webdriver
+
+
 import static_extractor as se
 import dynamic_extractor as de
 #import sys
 import numpy as np
 #from datetime import date
-import new_url_processing as up
+import url_processing as up
 from base64 import b64decode
 #import time
 
@@ -153,11 +157,38 @@ class URL:
     def process_selenium(self, user_agent):
         output = {}
         if user_agent == 'firefox':
-            print
+            driver = webdriver.Firefox()
+            req = urllib2.Request(self.name, headers={ 'User-Agent': 'Mozilla/5.0' })
         elif user_agent == None:
-            print
+            raise "Error in process_selenium: select a user agent."
         else:
-            raise "Error in process_request. User agent: "+user_agent+" unknown."
-        output['page'] = 'YOOOO'
-        output['code'] = 200
+            raise "Error in process_selenium. User agent: "+user_agent+" unknown."
+        
+        driver.get(self.name)
+        try:
+            output['page'] = driver.page_source
+        except:
+            output['page'] = ""
+            output['code'] = -5
+        finally:
+            driver.quit()
+            
+        # Get the http status code with urllib2 (not possible with selenium)
+        # TODO find a method that outputs redirection status
+        try:
+            resp = urllib2.urlopen(req)
+        except urllib2.HTTPError as e:
+            output['code'] = e.code
+        except urllib2.URLError as e:
+            output['code'] = -1
+        except:
+            output['code'] = -2
+        else:
+            try:
+                resp.read()
+            except httplib.IncompleteRead, e:
+                output['code'] = -3
+            else:
+                output['code'] = 200
+            
         return output

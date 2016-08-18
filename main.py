@@ -22,24 +22,24 @@ from Crawler.crawler import urls_from_crawler
 from Crawler.crawler import get_fields_from_malicious_file
 from Crawler.mw_crawl import crawl as malicious_crawl
 
-from Extractor.new_url_processing import is_in_db
-from Extractor.new_url_processing import has_new_features_to_add
+from Extractor.url_processing import is_in_db
+from Extractor.url_processing import has_new_features_to_add
 from Extractor.url import URL
 
-from Extractor.new_url_processing import get_feature_names as get_feature_names_url
-from Extractor.new_url_processing import check_field_value_in_url
-from Extractor.new_url_processing import del_all_urls
-from Extractor.new_url_processing import del_url
-from Extractor.new_url_processing import add_url_in_db
-from Extractor.new_url_processing import update_url_in_db
-from Extractor.new_url_processing import is_feature_in_db
-from Extractor.new_url_processing import update_field
-from Extractor.new_url_processing import get_all_urls_db
-from Extractor.new_url_processing import get_benign_urls_db
-from Extractor.new_url_processing import get_malicious_urls_db
-from Extractor.new_url_processing import sanitize_db
-from Extractor.new_url_processing import count_type as count_db
-from Extractor.new_url_processing import get_field_from_url
+from Extractor.url_processing import get_feature_names as get_feature_names_url
+from Extractor.url_processing import check_field_value_in_url
+from Extractor.url_processing import del_all_urls
+from Extractor.url_processing import del_url
+from Extractor.url_processing import add_url_in_db
+from Extractor.url_processing import update_url_in_db
+from Extractor.url_processing import is_feature_in_db
+from Extractor.url_processing import update_field
+from Extractor.url_processing import get_all_urls_db
+from Extractor.url_processing import get_benign_urls_db
+from Extractor.url_processing import get_malicious_urls_db
+from Extractor.url_processing import sanitize_db
+from Extractor.url_processing import count_type as count_db
+from Extractor.url_processing import get_field_from_url
 
 import matplotlib.pyplot as plt
 
@@ -67,7 +67,7 @@ signal.signal(signal.SIGALRM, handler)
 
 def main_benign():    
     
-    METHOD = 'urllib2' # 'Selenium' or 'urllib2'
+    METHOD = 'Selenium' # 'Selenium' or 'urllib2'
     UA = 'firefox' # 'firefox' or None       
     urls_to_analyse = urls_from_crawler(benign_urls_addr)
     
@@ -113,7 +113,7 @@ def main_benign():
             print exc
             
 def main_malicious():
-    METHOD = 'urllib2' # 'Selenium' or 'urllib2'
+    METHOD = 'Selenium' # 'Selenium' or 'urllib2'
     UA = 'firefox' # 'firefox' or None       
     malicious_fields_lines = get_fields_from_malicious_file(malicious_urls_addr)
     
@@ -184,7 +184,7 @@ def print_count():
     print "--------------------------------------------------------\n"
 
 ################################# STATS #####################################    
-def stats_crawl():
+def plot_distribution_crawling_times():
     x_benign_urls = get_benign_urls_db(db_urls)
     x_malicious_urls = get_malicious_urls_db(db_urls)
     
@@ -281,6 +281,9 @@ if __name__=='__main__':
     t = time.time()
     malicious_crawl()
     t1 = time.time()
+    
+    # TODO implement sanitization of malicious urls
+    
     main_benign()
     t2 = time.time()
     main_malicious()
@@ -289,11 +292,11 @@ if __name__=='__main__':
     t4 = time.time()
     print_count()
     
-    print "\n\n\nSetup time: "+str(setup_t)+"."
+    print "Setup time: "+str(setup_t)+"."
     print "Time elapsed for 'del_all_urls': "+str(t-t_start)+"."
     print "Time elapsed for 'malicious_crawl': "+str(t1-t)+"."
     print "Time elapsed for 'main_benign': "+str(t2-t1)+"."
     print "Time elapsed for 'main_malicious': "+str(t3-t2)+"."
     print "Time elapsed for 'sanitize_db': "+str(t4-t3)+"."
 
-    stats_crawl()
+#    plot_distribution_crawling_times()
