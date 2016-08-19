@@ -1,0 +1,38 @@
+Stats 18/08/2016 18:29
+
+--------------------------------------------------------
+Count in database:
+
+> Benign items:    445
+> Malicious items: 136
+--------------------------------------------------------
+
+Setup time: 0.0254900455475.
+Time elapsed for 'main_benign': 1184.7873261.
+Time elapsed for 'main_malicious': 1021.31313491.
+Time elapsed for 'sanitize_db': 3.11950111389.
+
+Stats 19/08/2016 16:15
+
+Time elapsed for 'db_to_arranged_urls': 28.6407730579.
+Time elapsed for 'Replacing strings by 0s': 0.00101804733276.
+Time elapsed for 'cross_validation_scores': 482.0049541.
+
+
+TP: 0.71
+FP: 0.08
+FN: 0.05
+TN: 0.15
+NPP: 0.74
+Specificity: 0.64
+Precision/PPP (basic): 0.89
+Precision/PPP (predefined):  0.74
+Sensitivity/recall (basic): 0.93
+Sensitivity/recall (predefined):  0.64
+Accuracy (basic):  0.86
+Accuracy (predefined):  0.86
+F1 score (basic):  0.91
+F1 score (predefined):  0.69
+F2 score (basic):  0.92
+F2 score (predefined):  0.66
+
