@@ -298,24 +298,31 @@ if __name__=='__main__':
 #    main_malicious()
 #    t3 = time.time()    
 #    sanitize_db(db_urls)
-#    t4 = time.time()
+    t4 = time.time()
 #    print_count()
     
     clf = svm_clf()
     arranged_urls = db_to_arranged_urls(db_urls)
+    print "> 'arranged_urls' done."
+    t5 = time.time()
+    
+    y = arranged_urls['y']
     X = arranged_urls['X']
+    
+    # Replacing strings features by 0s...
+    # TODO feature engineering: turn strings into numerical values because SVM
+    # does not accept non-numerical values
     for a in X:
         for b in a:
             if not type(b) is int:
                 i = a.index(b)
-                a[i] = 0
+                a[i] = 0     
+    print "> Replacing strings by 0s done."
+    t6 = time.time()
                 
-    y = arranged_urls['y']
-    
-    print X
-    print y    
-    
     cross_validation_scores(X, y, clf)
+    
+    t7 = time.time()
     
 #    print_db()
     
@@ -325,5 +332,8 @@ if __name__=='__main__':
 #    print "Time elapsed for 'main_benign': "+str(t2-t1)+"."
 #    print "Time elapsed for 'main_malicious': "+str(t3-t2)+"."
 #    print "Time elapsed for 'sanitize_db': "+str(t4-t3)+"."
+    print "Time elapsed for 'db_to_arranged_urls': "+str(t5-t4)+"."
+    print "Time elapsed for 'Replacing strings by 0s': "+str(t6-t5)+"."
+    print "Time elapsed for 'cross_validation_scores': "+str(t7-t6)+"."
 
 #    plot_distribution_crawling_times()

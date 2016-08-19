@@ -35,6 +35,7 @@ from bson.json_util import dumps
 #          ]
 # }
 def db_to_arranged_urls(collection):
+    print ">> 'db_to_arranged_urls'",
     output = {}
     f_names = get_features_names(collection)
     len_f_names = len(f_names)
@@ -42,7 +43,7 @@ def db_to_arranged_urls(collection):
     output['urls'] = []
     X = []
     y = []
-    
+
     items = collection.find()
     for item in items:
         u = {}
@@ -56,8 +57,7 @@ def db_to_arranged_urls(collection):
             try:
                 u['features_values'][output['features_names'].index(sf)] = sf_list[sf]
             except:
-                raise "Error in 'arranged_urls_from_db': no such feature exists."
-                
+                raise "Error in 'arranged_urls_from_db': no such feature exists."     
         for df in df_list:
             try:
                 u['features_values'][output['features_names'].index(df)] = df_list[df]
@@ -67,13 +67,13 @@ def db_to_arranged_urls(collection):
             u['target'] = 1 
         else:
             u['target'] = 0
-        
         output['urls'].append(u)
         X.append(u['features_values'])
         y.append(u['target'])
-        
+      
     output['X'] = X
     output['y'] = y
+    print "done."  
     return output
     
 def get_features_names(collection):
