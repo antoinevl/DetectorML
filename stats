@@ -36,3 +36,34 @@ F1 score (predefined):  0.69
 F2 score (basic):  0.92
 F2 score (predefined):  0.66
 
+
+Stats 20/08/2016 18:15
+
+--------------------------------------------------------
+Count in database:
+
+> Benign items:    453
+> Malicious items: 277
+--------------------------------------------------------
+
+TP: 0.56
+FP: 0.11
+FN: 0.06
+TN: 0.27
+NPP: 0.80
+Specificity: 0.70
+Precision/PPP (basic): 0.83
+Precision/PPP (predefined):  0.80
+Sensitivity/recall (basic): 0.90
+Sensitivity/recall (predefined):  0.70
+Accuracy (basic):  0.82
+Accuracy (predefined):  0.82
+F1 score (basic):  0.86
+F1 score (predefined):  0.75
+F2 score (basic):  0.88
+F2 score (predefined):  0.72
+
+Time elapsed for 'db_to_arranged_urls': 67.7425458431.
+Time elapsed for 'Replacing strings by 0s': 0.0011990070343.
+Time elapsed for 'cross_validation_scores': 568.597982168.
+

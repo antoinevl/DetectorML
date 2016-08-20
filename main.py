@@ -55,7 +55,7 @@ client = MongoClient(vm_url, db_port)
 db = client.projectDB
 db_urls = db.urls
 benign_urls_addr = '/home/avl/MSc-project/Crawler/alexa-top500'
-malicious_urls_addr = '/home/avl/MSc-project/Crawler/malwaredomains-raw-recent'
+malicious_urls_addr = '/home/avl/MSc-project/Crawler/mwlist_all'
 
 # Statistic variables
 setup_t = time.time()-t0
@@ -290,16 +290,16 @@ if __name__=='__main__':
 #    t = time.time()
 #    malicious_crawl()
 #    t1 = time.time()
-    
-    # TODO implement sanitization of malicious urls
-    
+#    
+#    # TODO implement sanitization of malicious urls
+#    
 #    main_benign()
 #    t2 = time.time()
 #    main_malicious()
 #    t3 = time.time()    
 #    sanitize_db(db_urls)
     t4 = time.time()
-#    print_count()
+    print_count()
     
     clf = svm_clf()
     arranged_urls = db_to_arranged_urls(db_urls)
@@ -326,7 +326,7 @@ if __name__=='__main__':
     
 #    print_db()
     
-    print "Setup time: "+str(setup_t)+"."
+#    print "Setup time: "+str(setup_t)+"."
 #    print "Time elapsed for 'del_all_urls': "+str(t-t_start)+"."
 #    print "Time elapsed for 'malicious_crawl': "+str(t1-t)+"."
 #    print "Time elapsed for 'main_benign': "+str(t2-t1)+"."

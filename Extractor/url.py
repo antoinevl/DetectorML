@@ -170,6 +170,7 @@ class URL:
         except:
             output['page'] = ""
             output['code'] = -5
+            driver.quit()
         finally:
             driver.quit()
             
