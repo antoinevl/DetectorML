@@ -18,11 +18,11 @@ def predict(url_name):
     clf = joblib.load("clf_svm.pkl")
     X_to_predict = url_to_X(url_name, features_name_file)
     prediction =  clf.predict(X_to_predict)[0]
-    print "'"+url_name+"' is",
+    
     if prediction == 0:
-        print "benign."
+        return "benign"
     else:
-        print "malicious."
+        return "malicious"
 
 if __name__=='__main__':
     predict(url_name)
