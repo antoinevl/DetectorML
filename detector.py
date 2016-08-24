@@ -11,6 +11,8 @@ from pprint import pprint
 
 url_name = "http://fahd.com"
 
+# Make sure that phantomjs is launched by the command: phantomjs  --webdriver 28042
+
 def predict(url_name):
     features_name_file = "feat_names.pkl"
     clf = joblib.load("clf_svm.pkl")

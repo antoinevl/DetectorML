@@ -186,6 +186,9 @@ class URL:
             req = urllib2.Request(self.name, headers={ 'User-Agent': 'Mozilla/5.0' })
         elif user_agent == None:
             raise "Error in process_selenium: select a user agent."
+        elif user_agent == 'PhantomJS':
+            driver = webdriver.PhantomJS() # Requires command: phantomjs  --webdriver 28042
+            req = urllib2.Request(self.name, headers={ 'User-Agent': 'Mozilla/5.0' })
         else:
             raise "Error in process_selenium. User agent: "+user_agent+" unknown."
         
@@ -319,4 +322,3 @@ class URL:
         
         return output
         
-

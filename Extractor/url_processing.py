@@ -37,7 +37,8 @@ def get_save_features_names(collection):
 
 def url_to_X(url_name, features_names_file):
     METHOD = 'Selenium' # 'Selenium' or 'urllib2'
-    UA = 'firefox' # 'firefox' or None   
+    UA = 'PhantomJS' # 'firefox' or None   
+                     # PhantomJS requires command: phantomjs  --webdriver 28042
     f_names = joblib.load(features_names_file)
     n = len(f_names)
     X = []   
