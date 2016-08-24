@@ -22,3 +22,5 @@ def predict(url_name):
     else:
         print "malicious."
 
+if __name__=='__main__':
+    predict(url_name)
