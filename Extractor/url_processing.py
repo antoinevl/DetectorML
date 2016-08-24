@@ -23,7 +23,41 @@ from datetime import date
 from base64 import b64encode
 import time
 from bson.json_util import dumps
+from sklearn.externals import joblib
 #from pprint import pprint
+
+
+
+def get_save_features_names(collection):
+    f_names = get_features_names(collection)
+    joblib.dump(f_names, 'feat_names.pkl')
+    return f_names
+    
+
+
+def url_to_X(url_name, features_names_file):
+    METHOD = 'Selenium' # 'Selenium' or 'urllib2'
+    UA = 'firefox' # 'firefox' or None   
+    f_names = joblib.load(features_names_file)
+    n = len(f_names)
+    X = []   
+    
+    u = URL(url_name)
+    u.process(user_agent = UA, method = METHOD, to_reload = True, collection = None)
+    static_features_url = u.static_features
+    dynamic_features_url = u.dynamic_features
+    features_url = {}
+    features_url.update(static_features_url)
+    features_url.update(dynamic_features_url)
+    
+    x = [0]*n
+    for i in xrange(n):        
+        try:
+            x[i] = features_url[f_names[i]]
+        except:
+            pass
+    X.append(x)   
+    return X
 
 
 # Return output of the form:
@@ -35,9 +69,8 @@ from bson.json_util import dumps
 #          ]
 # }
 def db_to_arranged_urls(collection):
-    print ">> 'db_to_arranged_urls'",
     output = {}
-    f_names = get_features_names(collection)
+    f_names = get_save_features_names(collection)
     len_f_names = len(f_names)
     output['features_names'] = f_names
     output['urls'] = []
@@ -73,7 +106,7 @@ def db_to_arranged_urls(collection):
       
     output['X'] = X
     output['y'] = y
-    print "done."  
+ 
     return output
     
 def get_features_names(collection):

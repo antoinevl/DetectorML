@@ -94,5 +94,6 @@ F1 score (predefined):  0.78
 F2 score (basic):  0.89
 F2 score (predefined):  0.76
 
+Time elapsed for 'db_to_arranged_urls': 160.835427999.
 Time elapsed for 'clf fitting time': 405.912940025.
 

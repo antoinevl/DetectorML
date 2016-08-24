@@ -299,13 +299,12 @@ if __name__=='__main__':
     t2 = time.time()
 #    main_malicious()
     t3 = time.time()    
-    sanitize_db(db_urls)
+#    sanitize_db(db_urls)
     t4 = time.time()
     print_count()
     
     clf = svm_clf()
     arranged_urls = db_to_arranged_urls(db_urls)
-    print "> 'arranged_urls' done."
     t5 = time.time()
     
     y = arranged_urls['y']
