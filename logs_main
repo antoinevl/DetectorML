@@ -1,0 +1,21 @@
+--------------------------------------------------------
+Crawl:
+
+Start crawling malwaredomains...
+0 URL(s) have been added to malwaredomains-raw-recent
+Crawling done.
+
+Start crawling malwaredomains...
+0 URL(s) have been added to malwaredomainlist-recent
+Crawling done.
+--------------------------------------------------------
+
+Starting benign extraction...
+1 -  'ascii' codec can't encode character u'\xd7' in position 81670: ordinal not in range(128)
+2 -  'ascii' codec can't encode character u'\xb0' in position 32556: ordinal not in range(128)
+3 -  'ascii' codec can't encode character u'\xa0' in position 40213: ordinal not in range(128)
+4 -  'ascii' codec can't encode character u'\xd7' in position 81921: ordinal not in range(128)
+5 -  'ascii' codec can't encode character u'\u2019' in position 68193: ordinal not in range(128)
+6 -  'ascii' codec can't encode character u'\u2026' in position 30614: ordinal not in range(128)
+7 -  'ascii' codec can't encode character u'\xa0' in position 10778: ordinal not in range(128)
+8 - 
