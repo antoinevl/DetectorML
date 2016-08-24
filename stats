@@ -67,3 +67,32 @@ Time elapsed for 'db_to_arranged_urls': 67.7425458431.
 Time elapsed for 'Replacing strings by 0s': 0.0011990070343.
 Time elapsed for 'cross_validation_scores': 568.597982168.
 
+
+Stats 24/08/2016 16:00
+
+--------------------------------------------------------
+Count in database:
+
+> Benign items:    441
+> Malicious items: 244
+--------------------------------------------------------
+
+TP: 0.58
+FP: 0.09
+FN: 0.07
+TN: 0.27
+NPP: 0.80
+Specificity: 0.75
+Precision/PPP (basic): 0.87
+Precision/PPP (predefined):  0.80
+Sensitivity/recall (basic): 0.90
+Sensitivity/recall (predefined):  0.75
+Accuracy (basic):  0.85
+Accuracy (predefined):  0.85
+F1 score (basic):  0.88
+F1 score (predefined):  0.78
+F2 score (basic):  0.89
+F2 score (predefined):  0.76
+
+Time elapsed for 'clf fitting time': 405.912940025.
+

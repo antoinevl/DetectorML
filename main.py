@@ -17,6 +17,7 @@ from Classifier.classification import svm_clf,cross_validation_scores
 
 from sklearn import cross_validation
 from sklearn import svm
+from sklearn.externals import joblib
 
 from Crawler.crawler import urls_from_crawler
 from Crawler.crawler import get_fields_from_malicious_file
@@ -28,7 +29,7 @@ from Extractor.url import URL
 
 from Extractor.url_processing import get_feature_names_url
 from Extractor.url_processing import check_field_value_in_url
-from Extractor.url_processing import del_all_urls
+from Extractor.url_processing import del_all_urls, del_malicious_urls
 from Extractor.url_processing import del_url
 from Extractor.url_processing import add_url_in_db
 from Extractor.url_processing import update_url_in_db
@@ -115,16 +116,17 @@ def main_benign():
             
 def main_malicious():
     METHOD = 'Selenium' # 'Selenium' or 'urllib2'
-    UA = 'firefox' # 'firefox' or None       
+    UA = 'firefox' # 'firefox' or None      
     malicious_fields_lines = get_fields_from_malicious_file(malicious_urls_addr)
     
     cpt_malicious = 0    
     print("Starting malicious extraction...")
+     
+    urls_list = get_all_urls_db(db_urls)  
     
-    urls_list = get_all_urls_db(db_urls)    
     
     for l in malicious_fields_lines:
-        
+
         u = l['url_name']
         
         ## Statistic variables / printing
@@ -140,10 +142,9 @@ def main_malicious():
         try:        
             # Now we start doing the real stuff 
             url = URL(u, url_type = 'Malicious')   
-            
             check_url_in_list = u in urls_list
             if check_url_in_list:
-                check = has_new_features_to_add(u, db_urls)   # check = 0 if no new features
+                check = has_new_features_to_add(u, db_urls)     # check = 0 if no new features
                                                                 #         1 else
                 if check == True:
                     RELOAD = not(check_field_value_in_url(u, 'user_agent', UA, db_urls) and check_field_value_in_url(u, 'method', METHOD, db_urls)) # reload page if different UA and Method
@@ -158,7 +159,7 @@ def main_malicious():
                 update_field(url.name, 'malicious_src', l['malicious_src'], db_urls)
                 update_field(url.name, 'ip', l['ip'], db_urls)
                 urls_list.append(u)
-                
+                 
                 ## Statistics
                 crawl_time = time.time()-t_crawl_start
                 update_field(url.name, 'stat_crawling_time', crawl_time, db_urls)
@@ -285,19 +286,20 @@ def test_db_to_arranged_urls():
 #%
 if __name__=='__main__':
     
-#    t_start = time.time()
+    t_start = time.time()
 #    del_all_urls(db_urls)
-#    t = time.time()
+#    del_malicious_urls(db_urls)
+    t = time.time()
 #    malicious_crawl()
-#    t1 = time.time()
+    t1 = time.time()
 #    
 #    # TODO implement sanitization of malicious urls
 #    
 #    main_benign()
-#    t2 = time.time()
+    t2 = time.time()
 #    main_malicious()
-#    t3 = time.time()    
-#    sanitize_db(db_urls)
+    t3 = time.time()    
+    sanitize_db(db_urls)
     t4 = time.time()
     print_count()
     
@@ -312,28 +314,36 @@ if __name__=='__main__':
     # Replacing strings features by 0s...
     # TODO feature engineering: turn strings into numerical values because SVM
     # does not accept non-numerical values
-    for a in X:
-        for b in a:
-            if not type(b) is int:
-                i = a.index(b)
-                a[i] = 0     
-    print "> Replacing strings by 0s done."
+#    for a in X:
+#        for b in a:
+#            if not type(b) is int:
+#                i = a.index(b)
+#                a[i] = 0     
+#    print "> Replacing strings by 0s done."
     t6 = time.time()
-                
-    cross_validation_scores(X, y, clf)
+#                
+#    cross_validation_scores(X, y, clf)
     
     t7 = time.time()
     
+    clf.fit(X,y)
+    
+    t8 = time.time()
+    
+    joblib.dump(clf,"clf_svm.pkl")
+    
 #    print_db()
     
-#    print "Setup time: "+str(setup_t)+"."
-#    print "Time elapsed for 'del_all_urls': "+str(t-t_start)+"."
-#    print "Time elapsed for 'malicious_crawl': "+str(t1-t)+"."
-#    print "Time elapsed for 'main_benign': "+str(t2-t1)+"."
-#    print "Time elapsed for 'main_malicious': "+str(t3-t2)+"."
-#    print "Time elapsed for 'sanitize_db': "+str(t4-t3)+"."
+    print "Setup time: "+str(setup_t)+"."
+    print "Time elapsed for 'del_all_urls': "+str(t-t_start)+"."
+    print "Time elapsed for 'malicious_crawl': "+str(t1-t)+"."
+    print "Time elapsed for 'main_benign': "+str(t2-t1)+"."
+    print "Time elapsed for 'main_malicious': "+str(t3-t2)+"."
+    print "Time elapsed for 'sanitize_db': "+str(t4-t3)+"."
     print "Time elapsed for 'db_to_arranged_urls': "+str(t5-t4)+"."
     print "Time elapsed for 'Replacing strings by 0s': "+str(t6-t5)+"."
     print "Time elapsed for 'cross_validation_scores': "+str(t7-t6)+"."
+    print "Time elapsed for 'clf fitting time': "+str(t8-t7)+"."
+    
 
 #    plot_distribution_crawling_times()

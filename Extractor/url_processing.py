@@ -132,8 +132,8 @@ def is_in_db(url_name, collection):
 def has_new_features_to_add(url_name, collection):
     u = URL(url_name)
     feat_names_url = u.get_feature_names()
-    feat_names_db = get_feature_names(url_name, collection)
-    res = sorted(feat_names_url['All']) == sorted(feat_names_db['All'])
+    feat_names_db = get_features_names(collection)
+    res = sorted(feat_names_url['All']) == sorted(feat_names_db)
     return res
 
 # Returns collection of feature names for an url in the db
@@ -172,8 +172,8 @@ def update_url_in_db(url, collection, to_recompute = False):
     if to_recompute == True:
         add_url_in_db(url, collection)
     else:
-        s_features = url.static_features()
-        d_features = url.dynamic_features()
+        s_features = url.static_features
+        d_features = url.dynamic_features
         s_features_to_add = {}
         d_features_to_add = {}
         
@@ -224,7 +224,7 @@ def add_url_in_db(url, collection):
     else:
         s = {
                 "url": url_name,
-                "page_b64": b64encode(url.page),
+                "page_b64": b64encode(url.page.encode('utf8')),
                 "description": url_description,
                 "type": url_type,
                 "code": url_code,
@@ -242,8 +242,8 @@ def add_url_in_db(url, collection):
         result.append(collection.insert_one(s))
         
         # Add features
-        s_features = url.static_features()
-        d_features = url.dynamic_features()
+        s_features = url.static_features
+        d_features = url.dynamic_features
         # Static
         for sf in s_features:
             feature_name = sf
@@ -340,12 +340,15 @@ def today_dmy():
 def sanitize_db(collection):
     items = collection.find()
     for item in items:
-        if (item['static_features'][0]['letter_count']==0):
+        if (item['static_features'][0]['html_letter_count']==0):
             del_url(item['url'], collection)
             
 # Deletes a certain url from the db        
 def del_url(url_name, collection):
     collection.delete_many({'url':url_name})
+
+def del_malicious_urls(collection):
+    collection.delete_many({'type':'Malicious'})
 
 # Deletes all the urls from the db
 def del_all_urls(collection):
