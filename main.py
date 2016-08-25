@@ -343,13 +343,13 @@ if __name__=='__main__':
     t8 = time.time()
     
     print "Decision Tree clf fitting...",
-    clf_svm.fit(X,y)
+    clf_dtree.fit(X,y)
     print "done."
     
     t9 = time.time()
 
     joblib.dump(clf_svm,"Dumps/clf_svm.pkl")
-    joblib.dump(clf_svm,"Dumps/clf_dtree.pkl")
+    joblib.dump(clf_dtree,"Dumps/clf_dtree.pkl")
 ###############################################################################    
 #    print_db()
     
