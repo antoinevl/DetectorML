@@ -360,8 +360,10 @@ if __name__=='__main__':
     print "Time elapsed for 'main_malicious': "+str(t3-t2)+"."
     print "Time elapsed for 'sanitize_db': "+str(t4-t3)+"."
     print "Time elapsed for 'db_to_arranged_urls': "+str(t5-t4)+"."
-    print "Time elapsed for 'cross_validation_scores': "+str(t6-t5)+"."
-    print "Time elapsed for 'clf fitting time': "+str(t7-t6)+"."
+    print "Time elapsed for 'SVM cross_validation_scores': "+str(t6-t5)+"."
+    print "Time elapsed for 'Decision Tree cross_validation_scores': "+str(t7-t6)+"."
+    print "Time elapsed for 'SVM clf fitting time': "+str(t8-t7)+"."
+    print "Time elapsed for 'Decision Tree clf fitting time': "+str(t9-t8)+"."
     
 
 #    plot_distribution_crawling_times()

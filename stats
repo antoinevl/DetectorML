@@ -97,3 +97,66 @@ F2 score (predefined):  0.76
 Time elapsed for 'db_to_arranged_urls': 160.835427999.
 Time elapsed for 'clf fitting time': 405.912940025.
 
+Stats 25/08/2016 20:00
+
+--------------------------------------------------------
+Count in database:
+
+> Benign items:    441
+> Malicious items: 244
+--------------------------------------------------------
+
+SVM Cross Validation:
+
+TP: 0.58
+FP: 0.09
+FN: 0.07
+TN: 0.27
+NPP: 0.80
+Specificity: 0.75
+Precision/PPP (basic): 0.87
+Precision/PPP (predefined):  0.80
+Sensitivity/recall (basic): 0.90
+Sensitivity/recall (predefined):  0.75
+Accuracy (basic):  0.85
+Accuracy (predefined):  0.85
+F1 score (basic):  0.88
+F1 score (predefined):  0.78
+F2 score (basic):  0.89
+F2 score (predefined):  0.76
+
+Decision Tree Cross Validation:
+
+TP: 0.54
+FP: 0.10
+FN: 0.10
+TN: 0.25
+NPP: 0.72
+Specificity: 0.71
+Precision/PPP (basic): 0.84
+Precision/PPP (predefined):  0.72
+Sensitivity/recall (basic): 0.85
+Sensitivity/recall (predefined):  0.71
+Accuracy (basic):  0.80
+Accuracy (predefined):  0.80
+F1 score (basic):  0.84
+F1 score (predefined):  0.71
+F2 score (basic):  0.84
+F2 score (predefined):  0.71
+
+SVM clf fitting... done.
+Decision Tree clf fitting... done.
+
+Setup time: 0.0126171112061.
+Time elapsed for 'del_all_urls': 1.19209289551e-06.
+Time elapsed for 'malicious_crawl': 0.0.
+Time elapsed for 'main_benign': 0.0.
+Time elapsed for 'main_malicious': 0.0.
+Time elapsed for 'sanitize_db': 9.53674316406e-07.
+Time elapsed for 'db_to_arranged_urls': 0.0201330184937.
+Time elapsed for 'SVM cross_validation_scores': 1512.55440903.
+Time elapsed for 'Decision Tree cross_validation_scores': 0.0715088844299.
+Time elapsed for 'SVM clf fitting time': 407.051361084.
+Time elapsed for 'Decision Tree clf fitting time': 413.650347948.
+
+
