@@ -303,8 +303,14 @@ if __name__=='__main__':
     t4 = time.time()
     print_count()
     
-    clf = svm_clf()
+    
+############################# ML ##############################################
+    clf_svm = svm_clf()
+
+    # Random Foreeeeeeeeeeeeest or Decision TREEEEEEEEEEEEEE    
+    
     arranged_urls = db_to_arranged_urls(db_urls)
+    
     t5 = time.time()
     
     y = arranged_urls['y']
@@ -321,16 +327,16 @@ if __name__=='__main__':
 #    print "> Replacing strings by 0s done."
     t6 = time.time()
 #                
-#    cross_validation_scores(X, y, clf)
+#    cross_validation_scores(X, y, clf_svm)
     
     t7 = time.time()
     
-    clf.fit(X,y)
+    clf_svm.fit(X,y)
     
     t8 = time.time()
     
-    joblib.dump(clf,"clf_svm.pkl")
-    
+    joblib.dump(clf_svm,"clf_svm.pkl")
+###############################################################################    
 #    print_db()
     
     print "Setup time: "+str(setup_t)+"."
