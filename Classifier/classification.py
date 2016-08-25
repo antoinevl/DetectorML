@@ -7,7 +7,7 @@ Created on Wed Jun 29 17:10:45 2016
 
 import random
 
-from sklearn import svm, cross_validation
+from sklearn import svm, cross_validation, tree
 from sklearn.metrics import confusion_matrix, roc_curve, auc, accuracy_score, f1_score, fbeta_score, precision_score, recall_score
 import matplotlib.pyplot as plt
 import numpy as np
@@ -46,6 +46,9 @@ def svm_prediction(X, y, X_to_predict):
 
 def svm_clf():
     return svm.SVC(kernel='linear', C=1)
+    
+def svm_dtree():
+    return tree.DecisionTreeClassifier()
 
 def cross_validation_scores(X, y, clf): 
     y_pred = cross_validation.cross_val_predict(clf, X, y, cv=5)  # better than cross_val_score: less restricting
@@ -71,20 +74,20 @@ def cross_validation_scores(X, y, clf):
     print "F2 score (basic):  %0.2f" % basic_metrics['F2']
     print "F2 score (predefined):  %0.2f" % fbeta_score(y_true, y_pred, 2)   
     
-    # Plot the ROC curve
-    fpr, tpr, _ = roc_curve(y_true, y_pred)
-    roc_auc = auc(fpr, tpr)
-    
-    plt.figure(1)
-    plt.plot(fpr, tpr,label='ROC curve (area = %0.2f)' % roc_auc)
-    plt.plot([0, 1], [0, 1], 'k--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver operating characteristic example')
-    plt.legend(loc="lower right")
-    plt.show()    
+#    # Plot the ROC curve
+#    fpr, tpr, _ = roc_curve(y_true, y_pred)
+#    roc_auc = auc(fpr, tpr)
+#    
+#    plt.figure(1)
+#    plt.plot(fpr, tpr,label='ROC curve (area = %0.2f)' % roc_auc)
+#    plt.plot([0, 1], [0, 1], 'k--')
+#    plt.xlim([0.0, 1.0])
+#    plt.ylim([0.0, 1.05])
+#    plt.xlabel('False Positive Rate')
+#    plt.ylabel('True Positive Rate')
+#    plt.title('Receiver operating characteristic example')
+#    plt.legend(loc="lower right")
+#    plt.show()    
 
 
 def metrics_from_confusion_matrix(y_true, y_pred):
@@ -118,4 +121,5 @@ def metrics_from_confusion_matrix(y_true, y_pred):
     
 
     return output
+    
     

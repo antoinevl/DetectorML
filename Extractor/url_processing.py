@@ -30,7 +30,7 @@ from sklearn.externals import joblib
 
 def get_save_features_names(collection):
     f_names = get_features_names(collection)
-    joblib.dump(f_names, 'feat_names.pkl')
+    joblib.dump(f_names, 'Dumps/feat_names.pkl')
     return f_names
     
 

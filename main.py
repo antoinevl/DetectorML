@@ -13,7 +13,7 @@ import time
 import Crawler.mw_crawl as mwc
 import Crawler.alexa_crawl as axc
 
-from Classifier.classification import svm_clf,cross_validation_scores
+from Classifier.classification import svm_clf,cross_validation_scores, svm_dtree
 
 from sklearn import cross_validation
 from sklearn import svm
@@ -305,37 +305,51 @@ if __name__=='__main__':
     
     
 ############################# ML ##############################################
+    # Classifiers
     clf_svm = svm_clf()
-
-    # Random Foreeeeeeeeeeeeest or Decision TREEEEEEEEEEEEEE    
+    clf_dtree = svm_dtree() 
     
-    arranged_urls = db_to_arranged_urls(db_urls)
+    # Load or compute X y
+    to_reload_urls = False
+    if to_reload_urls:
+        arranged_urls = db_to_arranged_urls(db_urls)
+        
+        y = arranged_urls['y']
+        X = arranged_urls['X']
+        
+        data = {'X':X, 'y':y}
+        joblib.dump(data,"Dumps/data.pkl")
+    else:
+        data = joblib.load("Dumps/data.pkl")
+        X = data['X']
+        y = data['y']
+        
+    t5 = time.time() 
     
-    t5 = time.time()
+    print "SVM Cross Validation:\n"     
+    cross_validation_scores(X, y, clf_svm)
     
-    y = arranged_urls['y']
-    X = arranged_urls['X']
-    
-    # Replacing strings features by 0s...
-    # TODO feature engineering: turn strings into numerical values because SVM
-    # does not accept non-numerical values
-#    for a in X:
-#        for b in a:
-#            if not type(b) is int:
-#                i = a.index(b)
-#                a[i] = 0     
-#    print "> Replacing strings by 0s done."
     t6 = time.time()
-#                
-#    cross_validation_scores(X, y, clf_svm)
     
-    t7 = time.time()
+    print "Decision Tree Cross Validation:\n"     
+    cross_validation_scores(X, y, clf_dtree)
     
+    t7 = time.time()    
+    
+    print "SVM clf fitting...",
     clf_svm.fit(X,y)
+    print "done."
     
     t8 = time.time()
     
-    joblib.dump(clf_svm,"clf_svm.pkl")
+    print "Decision Tree clf fitting...",
+    clf_svm.fit(X,y)
+    print "done."
+    
+    t9 = time.time()
+
+    joblib.dump(clf_svm,"Dumps/clf_svm.pkl")
+    joblib.dump(clf_svm,"Dumps/clf_dtree.pkl")
 ###############################################################################    
 #    print_db()
     
@@ -346,9 +360,8 @@ if __name__=='__main__':
     print "Time elapsed for 'main_malicious': "+str(t3-t2)+"."
     print "Time elapsed for 'sanitize_db': "+str(t4-t3)+"."
     print "Time elapsed for 'db_to_arranged_urls': "+str(t5-t4)+"."
-    print "Time elapsed for 'Replacing strings by 0s': "+str(t6-t5)+"."
-    print "Time elapsed for 'cross_validation_scores': "+str(t7-t6)+"."
-    print "Time elapsed for 'clf fitting time': "+str(t8-t7)+"."
+    print "Time elapsed for 'cross_validation_scores': "+str(t6-t5)+"."
+    print "Time elapsed for 'clf fitting time': "+str(t7-t6)+"."
     
 
 #    plot_distribution_crawling_times()
