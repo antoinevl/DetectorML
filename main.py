@@ -13,7 +13,7 @@ import time
 import Crawler.mw_crawl as mwc
 import Crawler.alexa_crawl as axc
 
-from Classifier.classification import svm_clf,cross_validation_scores, svm_dtree
+from Classifier.classification import svm_clf,cross_validation_scores, dtree_clf
 
 from sklearn import cross_validation
 from sklearn import svm
@@ -307,7 +307,7 @@ if __name__=='__main__':
 ############################# ML ##############################################
     # Classifiers
     clf_svm = svm_clf()
-    clf_dtree = svm_dtree() 
+    clf_dtree = dtree_clf() 
     
     # Load or compute X y
     to_reload_urls = False
@@ -347,6 +347,13 @@ if __name__=='__main__':
     print "done."
     
     t9 = time.time()
+    print "Features gain:"
+    f_names = joblib.load("Dumps/feat_names.pkl")
+    clf_dtree = joblib.load("Dumps/clf_dtree.pkl")
+    gains = clf_dtree.feature_importances_
+    for i in xrange(len(f_names)):
+        print("'"+f_names[i]+"': "+gains[i]+".")
+        
 
     joblib.dump(clf_svm,"Dumps/clf_svm.pkl")
     joblib.dump(clf_dtree,"Dumps/clf_dtree.pkl")

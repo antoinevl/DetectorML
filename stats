@@ -159,4 +159,55 @@ Time elapsed for 'Decision Tree cross_validation_scores': 0.0715088844299.
 Time elapsed for 'SVM clf fitting time': 407.051361084.
 Time elapsed for 'Decision Tree clf fitting time': 413.650347948.
 
+Stats 26/08/2016 14:40
+
+--------------------------------------------------------
+Count in database:
+
+> Benign items:    441
+> Malicious items: 244
+--------------------------------------------------------
+
+SVM Cross Validation:
+
+TP: 0.58
+FP: 0.09
+FN: 0.07
+TN: 0.27
+NPP: 0.80
+Specificity: 0.75
+Precision/PPP (basic): 0.87
+Precision/PPP (predefined):  0.80
+Sensitivity/recall (basic): 0.90
+Sensitivity/recall (predefined):  0.75
+Accuracy (basic):  0.85
+Accuracy (predefined):  0.85
+F1 score (basic):  0.88
+F1 score (predefined):  0.78
+F2 score (basic):  0.89
+F2 score (predefined):  0.76
+
+Decision Tree Cross Validation:
+
+TP: 0.54
+FP: 0.11
+FN: 0.11
+TN: 0.25
+NPP: 0.70
+Specificity: 0.69
+Precision/PPP (basic): 0.83
+Precision/PPP (predefined):  0.70
+Sensitivity/recall (basic): 0.83
+Sensitivity/recall (predefined):  0.69
+Accuracy (basic):  0.78
+Accuracy (predefined):  0.78
+F1 score (basic):  0.83
+F1 score (predefined):  0.69
+F2 score (basic):  0.83
+F2 score (predefined):  0.69
+
+Time elapsed for 'SVM cross_validation_scores': 1527.2311759.
+Time elapsed for 'Decision Tree cross_validation_scores': 0.0491352081299.
+Time elapsed for 'SVM clf fitting time': 418.048184872.
+Time elapsed for 'Decision Tree clf fitting time': 0.00334310531616.
 

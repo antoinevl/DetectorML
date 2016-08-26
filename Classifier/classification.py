@@ -47,7 +47,7 @@ def svm_prediction(X, y, X_to_predict):
 def svm_clf():
     return svm.SVC(kernel='linear', C=1)
     
-def svm_dtree():
+def dtree_clf():
     return tree.DecisionTreeClassifier()
 
 def cross_validation_scores(X, y, clf): 
