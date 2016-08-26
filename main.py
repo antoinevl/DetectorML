@@ -352,11 +352,12 @@ if __name__=='__main__':
     clf_dtree = joblib.load("Dumps/clf_dtree.pkl")
     gains = clf_dtree.feature_importances_
     for i in xrange(len(f_names)):
-        print("'"+f_names[i]+"': "+gains[i]+".")
+        print("'"+f_names[i]+"': "+str(gains[i])+".")
         
 
-    joblib.dump(clf_svm,"Dumps/clf_svm.pkl")
-    joblib.dump(clf_dtree,"Dumps/clf_dtree.pkl")
+#    joblib.dump(clf_svm,"Dumps/clf_svm.pkl")
+#    joblib.dump(clf_dtree,"Dumps/clf_dtree.pkl")
+
 ###############################################################################    
 #    print_db()
     
