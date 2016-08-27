@@ -6,21 +6,23 @@ Created on Sat Aug 27 14:05:23 2016
 """
 
 from detector import predict
+import urllib2
+from bs4 import BeautifulSoup
+from pprint import pprint
 
 def explore(url_name, depth):
     root = SpiderTree()
     root.name = url_name
     root.type = predict(url_name)
     if depth > 0:
-        root.children = get_linked_urls(url_name)
-        for u in root.children:
-            explore(u, depth-1)
+        l = get_linked_urls(url_name)
+        root.children = []
+        for u in l:
+            print u
+            root.children.append(explore(u, depth-1))
+    else:
+        root.children = []
     return root
-
-
-def get_linked_urls(url_name):
-
-    return 0
 
 class SpiderTree(object):
     def _init_(self):
@@ -28,19 +30,75 @@ class SpiderTree(object):
         self.type = None
         self.children = None
 
-if __name__ == "__main__":
+def get_linked_urls(url_name):
+    try:
+        resp = urllib2.urlopen(url_name)
+        page = resp.read()
+        soup = BeautifulSoup(page)
+        links = soup.find_all('a')
+        l = []
+        for tag in links:
+            link = tag.get('href',None)
+            if link is not None:
+                if link[0] == '#':
+                    pass
+                elif link[0] == '/':
+                    if len(link)>1 and link[1] == '/':
+                        link = "http:"+link
+                    else:
+                        if url_name[-1]=='/':
+                            link = url_name+link[1:]
+                        else:
+                            link = url_name+link
+                    l.append(link) 
+                
+        # domain        
+        domain = url_name
+        domain = domain.replace("https://www3.","")
+        domain = domain.replace("https://www.","")
+        domain = domain.replace("https://","")
+        domain = domain.replace("http://www3.","")
+        domain = domain.replace("http://www.","")
+        domain = domain.replace("http://","")
+        if domain[-1] == "/":
+            domain = domain[:-1]
+    #    for u in l:
+    #        if u.find(domain)!=-1:
+    #            try:
+    #                l = l.remove(u)
+    #            except:
+    #                pass
+            
+        for u in l:
+            if u.find("http")==-1:
+                try:
+                    l = l.remove(u)
+                except:
+                    pass
+    except:
+        l=[]
+    return l
+    
+def print_tree(tree):
+    if tree.children == []:
+        d = {"url": tree.name, "type": tree.type, "children": []}
+    else:
+        l_children = tree.children
+        l_rec = []
+        for child in l_children:
+            l_rec.append(print_tree(child))
+        d = {"url": tree.name, "type": tree.type, "children": l_rec}
+    return d
+    
+       
 
-    import urllib2
-    from bs4 import BeautifulSoup
-    url = 'http://www.google.co.in/'
 
-    conn = urllib2.urlopen(url)
-    html = conn.read()
-
-    soup = BeautifulSoup(html)
-    links = soup.find_all('a')
-
-    for tag in links:
-        link = tag.get('href',None)
-        if link is not None:
-            print link
+if __name__=="__main__":
+    url_name = "http://www.google.co.uk/"
+    get_linked_urls(url_name)
+    tree = explore(url_name, 2)
+    #print tree.children[0].children
+    #print get_linked_urls(url_name)
+    #print tree.children    
+    
+    pprint(print_tree(tree))
