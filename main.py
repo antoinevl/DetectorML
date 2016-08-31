@@ -390,9 +390,14 @@ if __name__=='__main__':
 
     import csv
     
-    myfile = open("Dumps/data.csv", 'wb')
-    wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-    wr.writerow(data)
+    with open("Dumps/X.csv", 'wb') as f:
+        wr = csv.writer(f, quoting=csv.QUOTE_ALL)
+        wr.writerow(X)
+    
+    with open("Dumps/y.csv", 'wb') as f:
+        wr = csv.writer(f, quoting=csv.QUOTE_ALL)
+        wr.writerow(y)
+    
 
     
     
