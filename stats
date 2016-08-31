@@ -239,72 +239,130 @@ Count in database:
 > Malicious items: 257
 --------------------------------------------------------
 
+
 SVM Cross Validation:
 
-TP: 0.55
-FP: 0.11
-FN: 0.08
-TN: 0.26
-NPP: 0.76
-Specificity: 0.70
-Precision/PPP (basic): 0.83
-Precision/PPP (predefined):  0.76
-Sensitivity/recall (basic): 0.87
-Sensitivity/recall (predefined):  0.70
-Accuracy (basic):  0.81
-Accuracy (predefined):  0.81
-F1 score (basic):  0.85
-F1 score (predefined):  0.73
-F2 score (basic):  0.86
-F2 score (predefined):  0.71
+TP: 0.63
+FP: 0.26
+FN: 0.00
+TN: 0.10
+NPP: 1.00
+Specificity: 0.28
+Precision/PPP (basic): 0.71
+Precision/PPP (predefined):  1.00
+Sensitivity/recall (basic): 1.00
+Sensitivity/recall (predefined):  0.28
+Accuracy (basic):  0.74
+Accuracy (predefined):  0.74
+F1 score (basic):  0.83
+F1 score (predefined):  0.44
+F2 score (basic):  0.92
+F2 score (predefined):  0.33
 
 Decision Tree Cross Validation:
 
 TP: 0.51
 FP: 0.09
 FN: 0.12
-TN: 0.28
+TN: 0.27
 NPP: 0.70
-Specificity: 0.76
-Precision/PPP (basic): 0.85
+Specificity: 0.74
+Precision/PPP (basic): 0.84
 Precision/PPP (predefined):  0.70
 Sensitivity/recall (basic): 0.81
-Sensitivity/recall (predefined):  0.76
+Sensitivity/recall (predefined):  0.74
 Accuracy (basic):  0.79
 Accuracy (predefined):  0.79
 F1 score (basic):  0.83
-F1 score (predefined):  0.73
+F1 score (predefined):  0.72
 F2 score (basic):  0.82
+F2 score (predefined):  0.73
+
+Random Forest Cross Validation:
+
+TP: 0.58
+FP: 0.12
+FN: 0.05
+TN: 0.25
+NPP: 0.83
+Specificity: 0.68
+Precision/PPP (basic): 0.83
+Precision/PPP (predefined):  0.83
+Sensitivity/recall (basic): 0.92
+Sensitivity/recall (predefined):  0.68
+Accuracy (basic):  0.83
+Accuracy (predefined):  0.83
+F1 score (basic):  0.87
+F1 score (predefined):  0.75
+F2 score (basic):  0.90
+F2 score (predefined):  0.71
+
+AdaBoost Cross Validation:
+
+TP: 0.56
+FP: 0.09
+FN: 0.07
+TN: 0.28
+NPP: 0.79
+Specificity: 0.75
+Precision/PPP (basic): 0.86
+Precision/PPP (predefined):  0.79
+Sensitivity/recall (basic): 0.88
+Sensitivity/recall (predefined):  0.75
+Accuracy (basic):  0.83
+Accuracy (predefined):  0.83
+F1 score (basic):  0.87
+F1 score (predefined):  0.77
+F2 score (basic):  0.88
 F2 score (predefined):  0.75
 
-Features gain (in %):
-'js_min_line_count':  0.48
-'html_line_count':  2.94
+SVM clf fitting... done.
+
+Decision Tree clf fitting... done.
+
+Random Forest clf fitting... done.
+
+AdaBoost clf fitting... done.
+
+Features gain:
+'js_min_line_count':  0.79
+'html_line_count':  3.69
 'js_total_escape_count':  0.92
-'js_total_letter_count':  0.00
+'js_total_letter_count':  0.80
 'js_max_word_by_line':  8.48
 'js_total_word_count':  1.43
-'js_min_word_by_line':  2.02
-'js_total_eval_count':  0.56
+'js_min_word_by_line':  1.49
+'js_total_eval_count':  1.03
 'js_total_unescape_count':  0.00
-'js_scripts_count':  2.15
-'js_total_line_count':  0.99
-'html_word_count':  8.98
-'js_min_letter_by_word':  2.27
-'js_max_letter_by_word':  0.86
-'html_letter_count':  46.37
-'js_min_word_count':  7.38
-'js_max_letter_count':  2.95
+'js_scripts_count':  1.07
+'js_total_line_count':  0.58
+'html_word_count':  9.12
+'js_min_letter_by_word':  1.78
+'js_max_letter_by_word':  0.00
+'html_letter_count':  46.51
+'js_min_word_count':  7.07
+'js_max_letter_count':  4.76
 'js_max_word_count':  1.73
-'js_total_word_by_line':  1.89
-'js_total_whitespace_count':  1.34
-'js_min_letter_count':  0.98
-'js_max_line_count':  4.10
-'js_total_letter_by_word':  1.18
+'js_total_word_by_line':  1.25
+'js_total_whitespace_count':  1.08
+'js_min_letter_count':  1.45
+'js_max_line_count':  3.53
+'js_total_letter_by_word':  1.44
 
-Time elapsed for 'db_to_arranged_urls': 62.1969161034.
-Time elapsed for 'SVM cross_validation_scores': 2626.73847604.
-Time elapsed for 'Decision Tree cross_validation_scores': 0.0534410476685.
-Time elapsed for 'SVM clf fitting time': 670.195350885.
-Time elapsed for 'Decision Tree clf fitting time': 574.587380886.
+Setup time: 0.00381016731262.
+Time elapsed for 'del_all_urls': 0.0.
+Time elapsed for 'malicious_crawl': 0.0.
+Time elapsed for 'main_benign': 9.53674316406e-07.
+Time elapsed for 'main_malicious': 0.0.
+Time elapsed for 'sanitize_db': 0.0.
+Time elapsed for 'db_to_arranged_urls': 0.0285568237305.
+Time elapsed for 'SVM cross_validation_scores': 0.194985151291.
+Time elapsed for 'Decision Tree cross_validation_scores': 0.0794639587402.
+Time elapsed for 'Random Forest cross_validation_scores': 0.203438997269.
+Time elapsed for 'AdaBoost cross_validation_scores': 0.627029895782.
+Time elapsed for 'SVM clf fitting time': 0.0593621730804.
+Time elapsed for 'Decision Tree clf fitting time': 0.00632405281067.
+Time elapsed for 'Random Forest Tree clf fitting time': 0.073089838028.
+Time elapsed for 'AdaBoost Tree clf fitting time': 0.267679929733.
+
 
