@@ -77,10 +77,19 @@ class URL:
         s_feats['js_total_eval_count'] = 0
         s_feats['js_total_unescape_count'] = 0
         s_feats['js_total_escape_count'] = 0
+        s_feats['js_total_whitespace_count'] = 0
         
         s_feats['html_letter_count'] = 0
         s_feats['html_word_count'] = 0
         s_feats['html_line_count'] = 0
+        
+        s_feats['js_total_letter_by_word'] = 0
+        s_feats['js_min_letter_by_word'] = 0
+        s_feats['js_max_letter_by_word'] = 0
+        
+        s_feats['js_total_word_by_line'] = 0
+        s_feats['js_min_word_by_line'] = 0
+        s_feats['js_max_word_by_line'] = 0
         
         return s_feats
     
@@ -228,6 +237,7 @@ class URL:
             js_total_eval_count = 0
             js_total_unescape_count = 0
             js_total_escape_count = 0
+            js_total_whitespace_count = 0
             
             for s in js_src_list:
                 try:
@@ -244,6 +254,7 @@ class URL:
                     js_total_eval_count += se.keyword_count(script, 'eval')
                     js_total_unescape_count += se.keyword_count(script, 'unescape')
                     js_total_escape_count += se.keyword_count(script, 'escape')
+                    js_total_whitespace_count += se.keyword_count(script, ' ')
                 
             for s in js_script_list:
                 js_letter_count.append(se.letter_count(s))
@@ -252,6 +263,7 @@ class URL:
                 js_total_eval_count += se.keyword_count(s, 'eval')
                 js_total_unescape_count += se.keyword_count(s, 'unescape')
                 js_total_escape_count += se.keyword_count(s, 'escape')
+                js_total_whitespace_count += se.keyword_count(s, ' ')
                 
             
             
@@ -284,10 +296,43 @@ class URL:
                 s_feats['js_total_line_count'] = 0
                 s_feats['js_max_line_count'] = 0
                 s_feats['js_min_line_count'] = 0
+                
+            if s_feats['js_total_word_count'] == 0:
+                s_feats['js_total_letter_by_word'] = 0.0
+            else:
+                s_feats['js_total_letter_by_word'] = float(s_feats['js_total_letter_count']) / float(s_feats['js_total_word_count'])
+                
+            if s_feats['js_min_word_count'] == 0:
+                s_feats['js_min_letter_by_word'] = 0.0
+            else:
+                s_feats['js_min_letter_by_word'] = float(s_feats['js_min_letter_count']) / float(s_feats['js_min_word_count'])
+            
+            if s_feats['js_max_word_count'] == 0:
+                s_feats['js_max_letter_by_word'] = 0.0
+            else:
+                s_feats['js_max_letter_by_word'] = float(s_feats['js_max_letter_count']) / float(s_feats['js_max_word_count'])
+                                
+            if s_feats['js_total_line_count'] == 0:
+                s_feats['js_total_word_by_line'] = 0.0
+            else:
+                s_feats['js_total_word_by_line'] = float(s_feats['js_total_word_count']) / float(s_feats['js_total_line_count'])
+                
+            if s_feats['js_min_line_count'] == 0:
+                s_feats['js_min_word_by_line'] = 0.0
+            else:
+                s_feats['js_min_word_by_line'] = float(s_feats['js_min_word_count']) / float(s_feats['js_min_line_count'])
+            
+            if s_feats['js_max_line_count'] == 0:
+                s_feats['js_max_word_by_line'] = 0.0
+            else:
+                s_feats['js_max_word_by_line'] = float(s_feats['js_max_word_count']) / float(s_feats['js_max_line_count'])
+                        
             
             s_feats['js_total_eval_count'] = js_total_eval_count
             s_feats['js_total_unescape_count'] = js_total_unescape_count
             s_feats['js_total_escape_count'] = js_total_escape_count
+            s_feats['js_total_whitespace_count'] = js_total_whitespace_count
+            
             
             s_feats['html_letter_count'] = se.letter_count(page)
             s_feats['html_word_count'] = se.word_count(page)

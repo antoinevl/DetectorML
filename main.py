@@ -44,6 +44,7 @@ from Extractor.url_processing import get_field_from_url
 from Extractor.url_processing import db_to_arranged_urls
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 ################################## MAIN #####################################
 
@@ -200,21 +201,82 @@ def plot_distribution_crawling_times():
     for i in range(len(x_malicious_urls)):
         y_malicious.append(get_field_from_url(x_malicious_urls[len(x_malicious_urls)-i-1],'stat_crawling_time',db_urls))
     
+    y_benign.sort()
+    y_malicious.sort()
+    
+    print y_benign
+    
+    ind_max_benign = 0
+    for i in xrange(len(y_benign)):
+        if y_benign[i]>20 and ind_max_benign == 0:
+            ind_max_benign = i
+    
+    ind_max_malicious = 0
+    for i in xrange(len(y_malicious)):
+        if y_malicious[i]>20 and ind_max_malicious == 0:
+            ind_max_malicious = i    
+    
     plt.figure(1)
     
     plt.title('Crawling times')    
     
     plt.subplot(211)
-    plt.plot(y_benign)
+    plt.plot(y_benign[:ind_max_benign])
     plt.ylabel('Benign URLs')
     
     plt.subplot(212)
-    plt.plot(y_malicious)
+    plt.plot(y_malicious[:ind_max_malicious])
     plt.ylabel('Malicious URLs')   
     
     plt.show()
 
+#plot_distribution_crawling_times()
 
+def plot_hist_crawling_times():
+    x_benign_urls = get_benign_urls_db(db_urls)
+    x_malicious_urls = get_malicious_urls_db(db_urls)
+    
+    y_benign = []
+    y_malicious = []
+    
+    
+    for i in range(len(x_benign_urls)):
+        y_benign.append(get_field_from_url(x_benign_urls[len(x_benign_urls)-i-1],'stat_crawling_time',db_urls))
+    
+    for i in range(len(x_malicious_urls)):
+        y_malicious.append(get_field_from_url(x_malicious_urls[len(x_malicious_urls)-i-1],'stat_crawling_time',db_urls))
+    
+    y_benign.sort()
+    y_malicious.sort()
+    
+    print y_benign
+    
+    ind_max_benign = 0
+    for i in xrange(len(y_benign)):
+        if y_benign[i]>20 and ind_max_benign == 0:
+            ind_max_benign = i
+    
+    ind_max_malicious = 0
+    for i in xrange(len(y_malicious)):
+        if y_malicious[i]>20 and ind_max_malicious == 0:
+            ind_max_malicious = i
+    
+    
+    plt.figure(1)
+    
+    plt.title('Crawling times')    
+    
+    plt.subplot(211)
+    plt.hist(y_benign[:ind_max_benign], 10)
+    plt.ylabel('Benign URLs')
+    
+    plt.subplot(212)
+    plt.hist(y_malicious[:ind_max_malicious], 10)
+    plt.ylabel('Malicious URLs')   
+    
+    plt.show()
+    
+#plot_hist_crawling_times()    
 
 ################################# TESTS #####################################
 def test1():
@@ -310,7 +372,7 @@ if __name__=='__main__':
     clf_dtree = dtree_clf() 
     
     # Load or compute X y
-    to_reload_urls = False
+    to_reload_urls = True
     if to_reload_urls:
         arranged_urls = db_to_arranged_urls(db_urls)
         
@@ -336,15 +398,18 @@ if __name__=='__main__':
     
     t7 = time.time()    
     
-    print "SVM clf fitting...",
+    print "\nSVM clf fitting...",
     clf_svm.fit(X,y)
-    print "done."
+    print "done.\n"
     
     t8 = time.time()
     
     print "Decision Tree clf fitting...",
     clf_dtree.fit(X,y)
-    print "done."
+    print "done.\n"
+    
+    joblib.dump(clf_svm,"Dumps/clf_svm.pkl")
+    joblib.dump(clf_dtree,"Dumps/clf_dtree.pkl")
     
     t9 = time.time()
     print "Features gain:"
@@ -352,16 +417,15 @@ if __name__=='__main__':
     clf_dtree = joblib.load("Dumps/clf_dtree.pkl")
     gains = clf_dtree.feature_importances_
     for i in xrange(len(f_names)):
-        print("'"+f_names[i]+"': "+str(gains[i])+".")
+        g = 100*gains[i]
+        print("'"+f_names[i]+"': "),
+        print("%.2f" % g)
         
-
-    joblib.dump(clf_svm,"Dumps/clf_svm.pkl")
-    joblib.dump(clf_dtree,"Dumps/clf_dtree.pkl")
 
 ###############################################################################    
 #    print_db()
     
-    print "Setup time: "+str(setup_t)+"."
+    print "\nSetup time: "+str(setup_t)+"."
     print "Time elapsed for 'del_all_urls': "+str(t-t_start)+"."
     print "Time elapsed for 'malicious_crawl': "+str(t1-t)+"."
     print "Time elapsed for 'main_benign': "+str(t2-t1)+"."
@@ -374,4 +438,5 @@ if __name__=='__main__':
     print "Time elapsed for 'Decision Tree clf fitting time': "+str(t9-t8)+"."
     
 
-#    plot_distribution_crawling_times()
+    
+    

@@ -230,3 +230,81 @@ Features gain:
 'js_min_word_count': 0.0953615462845.
 
 
+Stats 31/08/2016 19:15
+
+--------------------------------------------------------
+Count in database:
+
+> Benign items:    440
+> Malicious items: 257
+--------------------------------------------------------
+
+SVM Cross Validation:
+
+TP: 0.55
+FP: 0.11
+FN: 0.08
+TN: 0.26
+NPP: 0.76
+Specificity: 0.70
+Precision/PPP (basic): 0.83
+Precision/PPP (predefined):  0.76
+Sensitivity/recall (basic): 0.87
+Sensitivity/recall (predefined):  0.70
+Accuracy (basic):  0.81
+Accuracy (predefined):  0.81
+F1 score (basic):  0.85
+F1 score (predefined):  0.73
+F2 score (basic):  0.86
+F2 score (predefined):  0.71
+
+Decision Tree Cross Validation:
+
+TP: 0.51
+FP: 0.09
+FN: 0.12
+TN: 0.28
+NPP: 0.70
+Specificity: 0.76
+Precision/PPP (basic): 0.85
+Precision/PPP (predefined):  0.70
+Sensitivity/recall (basic): 0.81
+Sensitivity/recall (predefined):  0.76
+Accuracy (basic):  0.79
+Accuracy (predefined):  0.79
+F1 score (basic):  0.83
+F1 score (predefined):  0.73
+F2 score (basic):  0.82
+F2 score (predefined):  0.75
+
+Features gain (in %):
+'js_min_line_count':  0.48
+'html_line_count':  2.94
+'js_total_escape_count':  0.92
+'js_total_letter_count':  0.00
+'js_max_word_by_line':  8.48
+'js_total_word_count':  1.43
+'js_min_word_by_line':  2.02
+'js_total_eval_count':  0.56
+'js_total_unescape_count':  0.00
+'js_scripts_count':  2.15
+'js_total_line_count':  0.99
+'html_word_count':  8.98
+'js_min_letter_by_word':  2.27
+'js_max_letter_by_word':  0.86
+'html_letter_count':  46.37
+'js_min_word_count':  7.38
+'js_max_letter_count':  2.95
+'js_max_word_count':  1.73
+'js_total_word_by_line':  1.89
+'js_total_whitespace_count':  1.34
+'js_min_letter_count':  0.98
+'js_max_line_count':  4.10
+'js_total_letter_by_word':  1.18
+
+Time elapsed for 'db_to_arranged_urls': 62.1969161034.
+Time elapsed for 'SVM cross_validation_scores': 2626.73847604.
+Time elapsed for 'Decision Tree cross_validation_scores': 0.0534410476685.
+Time elapsed for 'SVM clf fitting time': 670.195350885.
+Time elapsed for 'Decision Tree clf fitting time': 574.587380886.
+
