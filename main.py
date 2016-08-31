@@ -13,7 +13,7 @@ import time
 import Crawler.mw_crawl as mwc
 import Crawler.alexa_crawl as axc
 
-from Classifier.classification import svm_clf,cross_validation_scores, dtree_clf
+from Classifier.classification import svm_clf,cross_validation_scores, dtree_clf, rforest_clf, adaboost_clf
 
 from sklearn import cross_validation
 from sklearn import svm
@@ -369,7 +369,9 @@ if __name__=='__main__':
 ############################# ML ##############################################
     # Classifiers
     clf_svm = svm_clf()
-    clf_dtree = dtree_clf() 
+    clf_dtree = dtree_clf()
+    clf_rforest = rforest_clf()
+    clf_adaboost = adaboost_clf()
     
     # Load or compute X y
     to_reload_urls = False
@@ -388,46 +390,58 @@ if __name__=='__main__':
     
     
 
-    import csv
-    
-    with open("Dumps/X.csv", 'wb') as f:
-        wr = csv.writer(f, quoting=csv.QUOTE_ALL)
-        wr.writerow(X)
-    
-    with open("Dumps/y.csv", 'wb') as f:
-        wr = csv.writer(f, quoting=csv.QUOTE_ALL)
-        wr.writerow(y)
-    
+#    import csv
+#    
+#    with open("Dumps/X.csv", 'wb') as f:
+#        wr = csv.writer(f, quoting=csv.QUOTE_ALL)
+#        wr.writerow(X)
+#    
+#    with open("Dumps/y.csv", 'wb') as f:
+#        wr = csv.writer(f, quoting=csv.QUOTE_ALL)
+#        wr.writerow(y)
+#    
 
     
     
     
-    t5 = time.time() 
+    t5 = time.time()    
+    print "\nSVM Cross Validation:\n"     
+    cross_validation_scores(X, y, clf_svm)   
+    t6 = time.time()   
+    print "\nDecision Tree Cross Validation:\n"     
+    cross_validation_scores(X, y, clf_dtree)   
+    t7 = time.time()
+    print "\nRandom Forest Cross Validation:\n"     
+    cross_validation_scores(X, y, clf_rforest)   
+    t8 = time.time()
+    print "\nAdaBoost Cross Validation:\n"     
+    cross_validation_scores(X, y, clf_adaboost)   
+    t9 = time.time()
     
-    print "SVM Cross Validation:\n"     
-    cross_validation_scores(X, y, clf_svm)
-    
-    t6 = time.time()
-    
-    print "Decision Tree Cross Validation:\n"     
-    cross_validation_scores(X, y, clf_dtree)
-    
-    t7 = time.time()    
     
     print "\nSVM clf fitting...",
     clf_svm.fit(X,y)
-    print "done.\n"
-    
-    t8 = time.time()
-    
+    print "done.\n"   
+    t10 = time.time()   
     print "Decision Tree clf fitting...",
     clf_dtree.fit(X,y)
     print "done.\n"
+    t11 = time.time()
+    print "Random Forest clf fitting...",
+    clf_rforest.fit(X,y)
+    print "done.\n"
+    t12 = time.time()
+    print "AdaBoost clf fitting...",
+    clf_adaboost.fit(X,y)
+    print "done.\n"
+    t13 = time.time()    
+    
     
     joblib.dump(clf_svm,"Dumps/clf_svm.pkl")
     joblib.dump(clf_dtree,"Dumps/clf_dtree.pkl")
+    joblib.dump(clf_dtree,"Dumps/clf_rforest.pkl")
     
-    t9 = time.time()
+    
     print "Features gain:"
     f_names = joblib.load("Dumps/feat_names.pkl")
     clf_dtree = joblib.load("Dumps/clf_dtree.pkl")
@@ -450,8 +464,12 @@ if __name__=='__main__':
     print "Time elapsed for 'db_to_arranged_urls': "+str(t5-t4)+"."
     print "Time elapsed for 'SVM cross_validation_scores': "+str(t6-t5)+"."
     print "Time elapsed for 'Decision Tree cross_validation_scores': "+str(t7-t6)+"."
-    print "Time elapsed for 'SVM clf fitting time': "+str(t8-t7)+"."
-    print "Time elapsed for 'Decision Tree clf fitting time': "+str(t9-t8)+"."
+    print "Time elapsed for 'Random Forest cross_validation_scores': "+str(t8-t7)+"."
+    print "Time elapsed for 'AdaBoost cross_validation_scores': "+str(t9-t8)+"."
+    print "Time elapsed for 'SVM clf fitting time': "+str(t10-t9)+"."
+    print "Time elapsed for 'Decision Tree clf fitting time': "+str(t11-t10)+"."
+    print "Time elapsed for 'Random Forest Tree clf fitting time': "+str(t12-t11)+"."
+    print "Time elapsed for 'AdaBoost Tree clf fitting time': "+str(t13-t12)+"."
     
 
     

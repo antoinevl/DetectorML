@@ -7,7 +7,7 @@ Created on Wed Jun 29 17:10:45 2016
 
 import random
 
-from sklearn import svm, cross_validation, tree
+from sklearn import svm, cross_validation, tree, ensemble
 from sklearn.metrics import confusion_matrix, roc_curve, auc, accuracy_score, f1_score, fbeta_score, precision_score, recall_score
 import matplotlib.pyplot as plt
 import numpy as np
@@ -44,8 +44,14 @@ def svm_prediction(X, y, X_to_predict):
     y_pred = clf.predict(X_to_predict)
     return y_pred
 
+def adaboost_clf():
+    return ensemble.AdaBoostClassifier()
+
+def rforest_clf():
+    return ensemble.RandomForestClassifier()
+
 def svm_clf():
-    return svm.SVC(kernel='linear', C=1)
+    return svm.SVC()
     
 def dtree_clf():
     return tree.DecisionTreeClassifier()
