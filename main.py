@@ -372,7 +372,7 @@ if __name__=='__main__':
     clf_dtree = dtree_clf() 
     
     # Load or compute X y
-    to_reload_urls = True
+    to_reload_urls = False
     if to_reload_urls:
         arranged_urls = db_to_arranged_urls(db_urls)
         
@@ -385,7 +385,18 @@ if __name__=='__main__':
         data = joblib.load("Dumps/data.pkl")
         X = data['X']
         y = data['y']
-        
+    
+    
+
+    import csv
+    
+    myfile = open("Dumps/data.csv", 'wb')
+    wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+    wr.writerow(data)
+
+    
+    
+    
     t5 = time.time() 
     
     print "SVM Cross Validation:\n"     
