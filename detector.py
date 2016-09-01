@@ -12,18 +12,30 @@ from Crawler.crawler import urls_from_crawler
 from Crawler.crawler import get_fields_from_malicious_file
 import sys
 import matplotlib.pyplot as plt
+import signal
 
 # Make sure that phantomjs is launched by the command: phantomjs  --webdriver 28042
+
+
+# Handler for the timeout
+def handler(signum, frame):
+    raise Exception("Timeout")
+signal.signal(signal.SIGALRM, handler)
+
 
 def predict(url_name):
     features_name_file = "Dumps/feat_names.pkl"
     clf = joblib.load("Dumps/clf_rforest.pkl")
     X_to_predict = url_to_X(url_name, features_name_file)
+    
+    # Set handler and timeout
     prediction =  clf.predict(X_to_predict)[0]
     if prediction == 0:
-        return "benign"
+        p = "benign"
     else:
-        return "malicious"
+        p = "malicious"
+        
+    return p
 
 def predict_urls(l):
     n = len(l)
@@ -31,19 +43,25 @@ def predict_urls(l):
     times = []
     sys.stdout.write("Prediction: ")
     for u in l:
-        t0 = time.time()
-        predict(u)
-        cpt += 1
-        sys.stdout.write("\rPrediction: "+str(cpt*100/n)+"%    ")
-        t1 = time.time()
-        t = t1-t0
-        times.append(t)
+        signal.alarm(20)
+        try:
+            t0 = time.time()
+            predict(u)
+            t1 = time.time()
+        except Exception,exc:
+            print exc
+        else:
+            cpt += 1
+            sys.stdout.write("\rPrediction: "+str(cpt*100/n)+"%    ")
+            t = t1-t0
+            times.append(t)
+        
     return times
     
 def stat_predict_urls(times):
     t_total = sum(times)
     average_time = t_total/len(times)
-    print "Average time: "+average_time+"."
+    print "Average time: "+str(average_time)+"."
     plt.figure() 
     plt.hist(times,10)
     plt.ylabel("# URLs")
@@ -61,11 +79,12 @@ def test_predict_urls():
     mfields = get_fields_from_malicious_file(malicious_urls_addr)
     murls = [f['url_name'] for f in mfields]
     urls = burls+murls
-    print "Start...\n"
-    predict_urls(urls)
+    print "Start..."
+    return predict_urls(urls)
 
 
 
 if __name__=='__main__':
-#    test_predict()
-    test_predict_urls()
+ #   test_predict()
+    times = test_predict_urls()
+    stat_predict_urls(times)

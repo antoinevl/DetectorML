@@ -1,6 +1,21 @@
 PhantomJS is launching GhostDriver...
-[INFO  - 2016-09-01T14:12:36.972Z] GhostDriver - Main - running on port 49722
-[INFO  - 2016-09-01T14:12:37.922Z] Session [230c7dc0-704e-11e6-8f66-fd943d00c9b3] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34","webSecurityEnabled":true}
-[INFO  - 2016-09-01T14:12:37.922Z] Session [230c7dc0-704e-11e6-8f66-fd943d00c9b3] - page.customHeaders:  - {}
-[INFO  - 2016-09-01T14:12:37.922Z] Session [230c7dc0-704e-11e6-8f66-fd943d00c9b3] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"1.9.8","driverName":"ghostdriver","driverVersion":"1.1.0","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
-[INFO  - 2016-09-01T14:12:37.922Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 230c7dc0-704e-11e6-8f66-fd943d00c9b3
+[INFO  - 2016-09-01T19:37:32.865Z] GhostDriver - Main - running on port 59082
+[INFO  - 2016-09-01T19:37:33.819Z] Session [87807590-707b-11e6-a5a1-efcf5ab0a197] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34","webSecurityEnabled":true}
+[INFO  - 2016-09-01T19:37:33.819Z] Session [87807590-707b-11e6-a5a1-efcf5ab0a197] - page.customHeaders:  - {}
+[INFO  - 2016-09-01T19:37:33.819Z] Session [87807590-707b-11e6-a5a1-efcf5ab0a197] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"1.9.8","driverName":"ghostdriver","driverVersion":"1.1.0","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2016-09-01T19:37:33.819Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 87807590-707b-11e6-a5a1-efcf5ab0a197
+[ERROR - 2016-09-01T19:37:35.019Z] Session [87807590-707b-11e6-a5a1-efcf5ab0a197] - page.onError - msg: TypeError: 'undefined' is not a function (near '...)}.bind(this))}.bind(this);var scheduleA...')
+[ERROR - 2016-09-01T19:37:35.019Z] Session [87807590-707b-11e6-a5a1-efcf5ab0a197] - page.onError - stack:
+  (anonymous function) (http://static.kameleoon.com/css/customers/r9u0567aww/0/kameleoon.js:1)
+  (anonymous function) (http://static.kameleoon.com/css/customers/r9u0567aww/0/kameleoon.js:1)
+  (anonymous function) (http://static.kameleoon.com/css/customers/r9u0567aww/0/kameleoon.js:1)
+  (anonymous function) (http://static.kameleoon.com/css/customers/r9u0567aww/0/kameleoon.js:1)
+  (anonymous function) (http://static.kameleoon.com/css/customers/r9u0567aww/0/kameleoon.js:1)
+  (anonymous function) (http://static.kameleoon.com/css/customers/r9u0567aww/0/kameleoon.js:1)
+  (anonymous function) (http://static.kameleoon.com/css/customers/r9u0567aww/0/kameleoon.js:1)
+  (anonymous function) (http://static.kameleoon.com/css/customers/r9u0567aww/0/kameleoon.js:4)
+[ERROR - 2016-09-01T19:37:36.986Z] Session [87807590-707b-11e6-a5a1-efcf5ab0a197] - page.onError - msg: TypeError: 'undefined' is not a function (evaluating 'this.triggerEvents.bind(this)')
+[ERROR - 2016-09-01T19:37:36.986Z] Session [87807590-707b-11e6-a5a1-efcf5ab0a197] - page.onError - stack:
+  APIconstructor (http://112038398dc590fd910f04439eba2dc2.ovh/aisle.js:1)
+  (anonymous function) (http://s1.lemde.fr/medias/web/bc627a2f0e4717ba5686aaa2880ce734/js/lmd/core/metrics/aisle.js:1)
+  (anonymous function) (http://s1.lemde.fr/medias/web/bc627a2f0e4717ba5686aaa2880ce734/js/lmd/core/metrics/aisle.js:1)

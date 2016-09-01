@@ -9,6 +9,7 @@ from detector import predict
 import urllib2
 from bs4 import BeautifulSoup
 from pprint import pprint
+import json
 
 def explore(url_name, depth):
     root = SpiderTree()
@@ -79,26 +80,28 @@ def get_linked_urls(url_name):
         l=[]
     return l
     
-def print_tree(tree):
+def tree_tojson(tree):
     if tree.children == []:
         d = {"url": tree.name, "type": tree.type, "children": []}
     else:
         l_children = tree.children
         l_rec = []
         for child in l_children:
-            l_rec.append(print_tree(child))
-        d = {"url": tree.name, "type": tree.type, "children": l_rec}
+            l_rec.append(tree_tojson(child))
+        d = {"name": tree.name, "type": tree.type, "children": l_rec}
     return d
     
        
 
 
 if __name__=="__main__":
-    url_name = "http://www.google.co.uk/"
+    url_name = "http://www.lemonde.fr/"
     get_linked_urls(url_name)
     tree = explore(url_name, 2)
     #print tree.children[0].children
     #print get_linked_urls(url_name)
     #print tree.children    
-    
-    pprint(print_tree(tree))
+    with open("Graphs/tree.json","w") as f:
+        json.dump(tree_tojson(tree),f)
+        
+    pprint(tree_tojson(tree))
