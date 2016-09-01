@@ -15,7 +15,7 @@ url_name = "http://fahd.com"
 
 def predict(url_name):
     features_name_file = "Dumps/feat_names.pkl"
-    clf = joblib.load("Dumps/clf_svm.pkl")
+    clf = joblib.load("Dumps/clf_rforest.pkl")
     X_to_predict = url_to_X(url_name, features_name_file)
     prediction =  clf.predict(X_to_predict)[0]
     
