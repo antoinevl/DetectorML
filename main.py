@@ -439,8 +439,9 @@ if __name__=='__main__':
     
     joblib.dump(clf_svm,"Dumps/clf_svm.pkl")
     joblib.dump(clf_dtree,"Dumps/clf_dtree.pkl")
-    joblib.dump(clf_dtree,"Dumps/clf_rforest.pkl")
-    joblib.dump(clf_dtree,"Dumps/clf_adaboost.pkl")
+    joblib.dump(clf_rforest,"Dumps/clf_rforest.pkl")
+    joblib.dump(clf_adaboost,"Dumps/clf_adaboost.pkl")
+        
     
     
     print "Features gain:"
