@@ -366,3 +366,144 @@ Time elapsed for 'Random Forest Tree clf fitting time': 0.073089838028.
 Time elapsed for 'AdaBoost Tree clf fitting time': 0.267679929733.
 
 
+
+
+
+
+
+
+
+
+
+With a different set of features:
+--------------------------------------------------------
+Count in database:
+
+> Benign items:    412
+> Malicious items: 329
+--------------------------------------------------------
+
+
+SVM Cross Validation:
+
+TP: 0.54
+FP: 0.25
+FN: 0.02
+TN: 0.20
+NPP: 0.91
+Specificity: 0.44
+Precision/PPP (basic): 0.68
+Precision/PPP (predefined):  0.91
+Sensitivity/recall (basic): 0.96
+Sensitivity/recall (predefined):  0.44
+Accuracy (basic):  0.73
+Accuracy (predefined):  0.73
+F1 score (basic):  0.80
+F1 score (predefined):  0.60
+F2 score (basic):  0.89
+F2 score (predefined):  0.49
+
+Decision Tree Cross Validation:
+
+TP: 0.43
+FP: 0.10
+FN: 0.13
+TN: 0.34
+NPP: 0.73
+Specificity: 0.77
+Precision/PPP (basic): 0.81
+Precision/PPP (predefined):  0.73
+Sensitivity/recall (basic): 0.77
+Sensitivity/recall (predefined):  0.77
+Accuracy (basic):  0.77
+Accuracy (predefined):  0.77
+F1 score (basic):  0.79
+F1 score (predefined):  0.75
+F2 score (basic):  0.78
+F2 score (predefined):  0.76
+
+Random Forest Cross Validation:
+
+TP: 0.48
+FP: 0.11
+FN: 0.08
+TN: 0.34
+NPP: 0.81
+Specificity: 0.76
+Precision/PPP (basic): 0.82
+Precision/PPP (predefined):  0.81
+Sensitivity/recall (basic): 0.86
+Sensitivity/recall (predefined):  0.76
+Accuracy (basic):  0.82
+Accuracy (predefined):  0.82
+F1 score (basic):  0.84
+F1 score (predefined):  0.78
+F2 score (basic):  0.85
+F2 score (predefined):  0.77
+
+AdaBoost Cross Validation:
+
+TP: 0.45
+FP: 0.10
+FN: 0.11
+TN: 0.34
+NPP: 0.76
+Specificity: 0.77
+Precision/PPP (basic): 0.81
+Precision/PPP (predefined):  0.76
+Sensitivity/recall (basic): 0.81
+Sensitivity/recall (predefined):  0.77
+Accuracy (basic):  0.79
+Accuracy (predefined):  0.79
+F1 score (basic):  0.81
+F1 score (predefined):  0.76
+F2 score (basic):  0.81
+F2 score (predefined):  0.76
+
+SVM clf fitting... done.
+
+Decision Tree clf fitting... done.
+
+Random Forest clf fitting... done.
+
+AdaBoost clf fitting... done.
+
+Features gain:
+'js_min_line_count':  0.34
+'js_total_word_count':  2.99
+'js_total_line_count':  0.72
+'js_total_unescape_count':  3.11
+'js_max_letter_count':  6.23
+'js_min_word_by_line':  1.62
+'js_scripts_count':  5.18
+'js_total_whitespace_count':  2.32
+'js_max_word_count':  0.00
+'js_total_letter_by_word':  1.98
+'js_min_letter_by_word':  1.65
+'js_max_letter_by_word':  3.21
+'js_total_eval_count':  1.10
+'js_total_word_by_line':  3.23
+'js_total_escape_count':  33.06
+'js_min_letter_count':  1.86
+'js_total_letter_count':  4.22
+'js_max_line_count':  1.05
+'js_min_word_count':  8.09
+'js_max_word_by_line':  18.04
+
+Setup time: 0.0123460292816.
+Time elapsed for 'del_all_urls': 0.0.
+Time elapsed for 'malicious_crawl': 0.0.
+Time elapsed for 'main_benign': 0.0.
+Time elapsed for 'main_malicious': 9.53674316406e-07.
+Time elapsed for 'sanitize_db': 0.0.
+Time elapsed for 'db_to_arranged_urls': 63.1113619804.
+Time elapsed for 'SVM cross_validation_scores': 0.144083976746.
+Time elapsed for 'Decision Tree cross_validation_scores': 0.0803279876709.
+Time elapsed for 'Random Forest cross_validation_scores': 0.167849063873.
+Time elapsed for 'AdaBoost cross_validation_scores': 0.587474822998.
+Time elapsed for 'SVM clf fitting time': 0.0829451084137.
+Time elapsed for 'Decision Tree clf fitting time': 0.0171749591827.
+Time elapsed for 'Random Forest Tree clf fitting time': 0.0686740875244.
+Time elapsed for 'AdaBoost Tree clf fitting time': 0.235874891281.
+
+

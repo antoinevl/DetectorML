@@ -10,13 +10,10 @@ import signal
 from pymongo import MongoClient
 from pprint import pprint
 import time
-import Crawler.mw_crawl as mwc
 import Crawler.alexa_crawl as axc
 
 from Classifier.classification import svm_clf,cross_validation_scores, dtree_clf, rforest_clf, adaboost_clf
 
-from sklearn import cross_validation
-from sklearn import svm
 from sklearn.externals import joblib
 
 from Crawler.crawler import urls_from_crawler
@@ -353,6 +350,7 @@ if __name__=='__main__':
 #    del_malicious_urls(db_urls)
     t = time.time()
 #    malicious_crawl()
+#    axc.crawl()
     t1 = time.time()
 #    
 #    # TODO implement sanitization of malicious urls
@@ -374,7 +372,7 @@ if __name__=='__main__':
     clf_adaboost = adaboost_clf()
     
     # Load or compute X y
-    to_reload_urls = False
+    to_reload_urls = True
     if to_reload_urls:
         arranged_urls = db_to_arranged_urls(db_urls)
         

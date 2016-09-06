@@ -79,9 +79,9 @@ class URL:
         s_feats['js_total_escape_count'] = 0
         s_feats['js_total_whitespace_count'] = 0
         
-        s_feats['html_letter_count'] = 0
-        s_feats['html_word_count'] = 0
-        s_feats['html_line_count'] = 0
+#        s_feats['html_letter_count'] = 0
+#        s_feats['html_word_count'] = 0
+#        s_feats['html_line_count'] = 0
         
         s_feats['js_total_letter_by_word'] = 0
         s_feats['js_min_letter_by_word'] = 0
@@ -334,9 +334,9 @@ class URL:
             s_feats['js_total_whitespace_count'] = js_total_whitespace_count
             
             
-            s_feats['html_letter_count'] = se.letter_count(page)
-            s_feats['html_word_count'] = se.word_count(page)
-            s_feats['html_line_count'] = se.line_count(page)
+#            s_feats['html_letter_count'] = se.letter_count(page)
+#            s_feats['html_word_count'] = se.word_count(page)
+#            s_feats['html_line_count'] = se.line_count(page)
             
             output['static_features'] = s_feats
             output['dynamic_features'] = d_feats

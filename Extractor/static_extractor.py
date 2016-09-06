@@ -4,6 +4,7 @@ Created on Mon Jun 27 13:59:38 2016
 
 @author: avl
 """
+import re
 
 def line_count(page):
     lines = page.splitlines()
@@ -24,7 +25,8 @@ def word_count(page):
     return word_count
 
 def keyword_count(page, keyword):
-    return page.count(keyword)
+    return len(re.findall(keyword, page))
+    #return page.count(keyword)
 
 def percentage_whitespace(page):
     return page.count(' ')
@@ -44,3 +46,6 @@ def most_frequent_word(page):
         return result
 
 
+if __name__=="__main__":
+    s = "s+=(eval(crappnviwevalrnio+"
+    print keyword_count(s,"eval")
