@@ -1,6 +1,6 @@
 from bottle import route, run, template, request, response
 from base64 import b64encode, b64decode
-from detector import predict
+from detector import predict, predict_proba
 import bottle
 
 def enable_cors(fn):
@@ -20,6 +20,6 @@ def enable_cors(fn):
 @enable_cors
 def f():
         url = request.query.url
-        return "URL: "+url+"<br>Prediction:"+predict(url)+"."
+        return "URL: "+url+"<br>Prediction:"+predict(url)+".\n"+predict_proba(url)
 
 run(host='146.169.47.251', port=8080)

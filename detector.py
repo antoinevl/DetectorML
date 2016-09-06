@@ -13,6 +13,7 @@ from Crawler.crawler import get_fields_from_malicious_file
 import sys
 import matplotlib.pyplot as plt
 import signal
+from pprint import pprint
 
 # Make sure that phantomjs is launched by the command: phantomjs  --webdriver 28042
 
@@ -36,6 +37,25 @@ def predict(url_name):
         p = "malicious"
         
     return p
+
+def predict_proba(url_name):
+    features_name_file = "Dumps/feat_names.pkl"
+    clf = joblib.load("Dumps/clf_rforest.pkl")
+    X_to_predict = url_to_X(url_name, features_name_file)
+    
+    # Set handler and timeout
+    prediction =  clf.predict(X_to_predict)[0]
+    prediction_proba =  clf.predict_proba(X_to_predict)[0]
+    if prediction == 0:
+        p = "Benign"
+    else:
+        p = "Malicious"
+    
+    h_proba = max(prediction_proba[0],prediction_proba[1])
+
+    #pprint(prediction_proba)   
+    return "Probability: "+str(h_proba*100)+"%."
+
 
 def predict_urls(l):
     n = len(l)
@@ -72,6 +92,11 @@ def test_predict():
     url_name = "http://fahd.com"
     print predict(url_name)
 
+def test_predict_proba():
+    url_name = "http://google.com"
+    print predict(url_name)
+    print predict_proba(url_name)
+
 def test_predict_urls():
     benign_urls_addr = '/home/avl/MSc-project/Crawler/alexa-top500'
     malicious_urls_addr = '/home/avl/MSc-project/Crawler/mwlist_all'
@@ -86,5 +111,4 @@ def test_predict_urls():
 
 if __name__=='__main__':
  #   test_predict()
-    times = test_predict_urls()
-    stat_predict_urls(times)
+    test_predict_proba()

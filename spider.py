@@ -95,7 +95,7 @@ def tree_tojson(tree):
 
 
 if __name__=="__main__":
-    url_name = "http://www.lemonde.fr/"
+    url_name = "http://www.youporn.com/"
     get_linked_urls(url_name)
     tree = explore(url_name, 2)
     #print tree.children[0].children
