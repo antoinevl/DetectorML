@@ -2,6 +2,7 @@ from bottle import route, run, template, request, response
 from base64 import b64encode, b64decode
 from detector import predict, predict_proba
 import bottle
+import time
 
 def enable_cors(fn):
     def _enable_cors(*args, **kwargs):
@@ -19,7 +20,12 @@ def enable_cors(fn):
 @route('/prediction')
 @enable_cors
 def f():
+		t0 = time.time()
         url = request.query.url
-        return predict(url)+"\n"+predict_proba(url)
+        p = predict(url)
+        pp = predict_prob(url)
+        t1 = time.time()
+        pt = "Prediction time: "+str(t1-t0)+"."
+        return p+"\n"+pp+"\n"+pt
 
 run(host='146.169.47.251', port=8080)
