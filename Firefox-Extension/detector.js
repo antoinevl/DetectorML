@@ -8,14 +8,23 @@ function httpGet(theUrl){
 function textDisplay(theUrl){
     var res = httpGet(theUrl);
     var type;
+    var proba;
     if (res.search("benign") != -1){
         type = "benign";
     } else if (res.search("malicious") != -1){
         type = "malicious";
     } else {
-	type = "error";
+		type = "error";
     }
-    return type;
+    if (res.search("benign") != -1){
+        type = "benign";
+    } else if (res.search("malicious") != -1){
+        type = "malicious";
+    } else {
+		type = "error";
+    }
+        
+    return res;
 }
 
 var url = document.URL

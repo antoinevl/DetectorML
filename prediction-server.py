@@ -20,6 +20,6 @@ def enable_cors(fn):
 @enable_cors
 def f():
         url = request.query.url
-        return "URL: "+url+"<br>Prediction:"+predict(url)+".\n"+predict_proba(url)
+        return predict(url)+".\n"+predict_proba(url)
 
 run(host='146.169.47.251', port=8080)
