@@ -23,7 +23,7 @@ def f():
 	t0 = time.time()
 	url = request.query.url
 	p = predict(url)
-	pp = predict_prob(url)
+	pp = predict_proba(url)
 	t1 = time.time()
 	pt = "Prediction time: "+str(t1-t0)+"."
 	return p+"\n"+pp+"\n"+pt

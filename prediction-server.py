@@ -25,7 +25,7 @@ def f():
 	p = predict(url)
 	pp = predict_proba(url)
 	t1 = time.time()
-	pt = "Prediction time: "+str(t1-t0)+"."
+	pt = "Prediction time: "+str(round(t1-t0,2))+"s."
 	return p+"\n"+pp+"\n"+pt
 
 run(host='146.169.47.251', port=8080)
