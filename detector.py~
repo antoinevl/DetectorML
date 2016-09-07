@@ -32,9 +32,9 @@ def predict(url_name):
     # Set handler and timeout
     prediction =  clf.predict(X_to_predict)[0]
     if prediction == 0:
-        p = "benign"
+        p = "Prediction: benign."
     else:
-        p = "malicious"
+        p = "Prediciton: malicious."
         
     return p
 
