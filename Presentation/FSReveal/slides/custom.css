@@ -1,0 +1,42 @@
+img[alt=imperial] { width: 300px; }
+img[alt=armrace] { width: 1200px; }
+img[alt=click] { width: 600px; }
+img[alt=detector] { height: 580px; }
+img[alt=stats1] { height: 80px; }
+img[alt=stats2] { height: 80px; }
+img[alt=main_architecture] { height: 530px; }
+
+.reveal section img {
+  margin: 0px 0px;
+  background: none;
+  border: 0px solid #333;
+  box-shadow: 0 0 0px rgba(0, 0, 0, 0.15); }
+
+.reveal section img.plain {
+  border: 0;
+  box-shadow: none; }
+
+.reveal a img {
+  -webkit-transition: all .15s linear;
+  -moz-transition: all .15s linear;
+  transition: all .15s linear; }
+
+.reveal a:hover img {
+  background: none;
+  border-color: none;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.55); }
+
+.reveal .slide-number {
+  position: fixed;
+  display: block;
+  right: 8px;
+  bottom: 8px;
+  z-index: 31;
+  font-family: Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  color: #000;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 5px; }
+
+  

